@@ -26,6 +26,19 @@ export default class ProductController {
       return res.status(400).json({ error: error.message });
     }
   }
+  //Lấy số lượng sản phẩm đã bán
+  static async getSoldCount(req, res) {
+    try {
+      const products = await Product.find();
+      const soldCount = products.reduce(
+        (total, product) => total + product.quantity_sold,
+        0
+      );
+      res.json({ soldCount});  
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
   //Thêm sản phẩm:
   static async addProduct(req, res) {
     try {
