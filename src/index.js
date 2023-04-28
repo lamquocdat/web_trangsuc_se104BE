@@ -13,6 +13,7 @@ app.use(express.json());
 //Router:
 app.use(sampleRouter);
 app.use(productRouter);
+app.use(userRouter);
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
