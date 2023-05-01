@@ -10,6 +10,7 @@ import orderRouter from "../src/routers/orderRouter.js";
 import cartRouter from "../src/routers/cartRouter.js";
 import router from "../src/routers/warehouseRouter.js";
 import vouchersRouter from "../src/routers/vouchersRouter.js";
+import serviceRouter from "../src/routers/serviceRouter.js";
 import warehouseRouter from "../src/routers/warehouseRouter.js"
 const app = express();
 const port = process.env.PORT || 3000;
@@ -23,7 +24,7 @@ app.use(orderRouter);
 app.use(cartRouter);
 app.use(router);
 app.use(vouchersRouter);
-app.use(warehouseRouter);
+app.use(warehouseRouter);app.use(serviceRouter);
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
