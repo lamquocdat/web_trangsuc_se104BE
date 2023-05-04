@@ -7,6 +7,7 @@ router
     .get("/order/:id", orderController.getOrderById)
     .get("/order/kh/:ten", orderController.getOrderByKH)
     .get("/order/tinhtrang/:tinhtrang", orderController.getOrderByStatus)
+    .get("/order/hd/:mahd", orderController.getOrderByMahd)
     .post("/order", orderController.addOrder)
     .put("/order/:id", orderController.updateOrder)
     .delete("/order/:id", orderController.deleteOrder)

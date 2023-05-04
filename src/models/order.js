@@ -17,6 +17,11 @@ const orderSchema = new mongoose.Schema({
         default: ""
     },
     sanphams: [{
+        hinhanh: {
+            type: String,
+            require: true,
+            default: "https://m.media-amazon.com/images/I/81bc8mA3nKL._AC_UY327_FMwebp_QL65_.jpg"
+        },
         sanpham: {
             type: String,
             require: true,

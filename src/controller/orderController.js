@@ -66,6 +66,17 @@ export const getOrderByStatus = async(req,res)=> {
     }
 }
 
+export const getOrderByMahd = async (req,res)=> {
+    try{
+        const hd = req.params.mahd;
+        const order = await Order.find({mahd: hd})
+        res.send(order);
+    }
+    catch(e){
+        res.status(500).send(e)
+    }
+}
+
 export const addOrder = async(req, res) => {
     const hd= new Order(req.body)
     try{
