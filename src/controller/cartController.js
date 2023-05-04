@@ -68,7 +68,7 @@ export const deleteSp = async (req, res) => {
 
         order.sanphams = order.sanphams.filter((sp) => sp.productid !== item.productid);
         order.tongtrigia = order.sanphams.reduce((acc, currentValue) => {
-            return acc + currentValue.gia * currentValue.soluong;
+            return acc + currentValue.price * currentValue.soluong;
         }, 0);
 
         order.save();
@@ -98,7 +98,7 @@ export const updateCart = async (req, res) => {
         order.tongtrigia = order.sanphams.reduce((acc, currentValue) => {
             return acc + currentValue.price * currentValue.soluong;
         }, 0);
-
+        order.markModified('sanphams');
         await order.save();
         res.send(order);
     } catch (e) {
