@@ -5,7 +5,7 @@ const orderSchema = new mongoose.Schema({
         default: "HD0",
         trim: true
     },
-    makh: {
+    userId: {
         type: String,  
         require: true,
         trim: true

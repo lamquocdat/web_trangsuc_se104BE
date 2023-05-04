@@ -29,7 +29,7 @@ export const getOrderByKH = async(req, res)=>{
             res.status(404).send("Không tìm thấy khách hàng (user) phù hợp!");
             return;
         }
-        const order = await Order.find({makh: kh.userid})
+        const order = await Order.find({userId: kh.userId})
         if (!order)
             res.status(404).send("Not found!")
         res.send(order)
@@ -49,13 +49,13 @@ export const getOrderByStatus = async(req,res)=> {
             {
               $lookup: {
                 from: "users", // Tên bảng user
-                localField: "makh", // Trường liên kết trong bảng Order
+                localField: "userId", // Trường liên kết trong bảng Order
                 foreignField: "userId", // Trường liên kết trong bảng User
                 as: "user" // Tên đối tượng được liên kết
               }
             },
             
-            // Đổi tên trường makh thành name để hiển thị tên khách hàng thay vì mã khách hàng
+            // Đổi tên trường userId thành name để hiển thị tên khách hàng thay vì mã khách hàng
             { $addFields: { "name": { $arrayElemAt: ["$user.name", 0] } } },
             { $unset: ["user"] }
           ]);
@@ -95,7 +95,7 @@ export const addOrder = async(req, res) => {
 
 export const updateOrder= async(req,res) => {
     const updates=Object.keys(req.body)
-    const allowUpdates=["makh","hinhanh","sanphams","ngaylap","tinhtrang","diachigiaohang"]
+    const allowUpdates=["userId","hinhanh","sanphams","ngaylap","tinhtrang","diachigiaohang"]
     const isValidOperation=updates.every((update)=>{
         return allowUpdates.includes(update)
     })
