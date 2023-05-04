@@ -3,10 +3,11 @@ const router = express.Router();
 import * as cartController from "../controller/cartController.js";
 
 router
-    .get("/cart/:id", cartController.getCartByMaKH)
+    .get("/cart/:userId", cartController.getCartByMaKH)
+    .post("/newcart", cartController.addCart)
     .post("/cart", cartController.addSpToCart)
-    .put("/cart/makh=:makh", cartController.updateCart)
-    .delete("/cart/productId=:productId", cartController.deleteSp)
-    .delete("/cart/:id", cartController.deleteGH);
+    .put("/cart", cartController.updateCart)
+    .delete("/cart/:userId/:productid", cartController.deleteSp)
+    .delete("/cart/:userId", cartController.deleteGH);
 
 export default router;
