@@ -3,16 +3,38 @@ import product from "../models/product.js"
 
 // Get Cart By Makh: truyền makh
 export const getCartByMaKH = async (req, res) => {
-    const Id = req.params.userId;
-    try {
-        const order = await cart.findOne({ userId: Id });
-        if (!order) {
-            return res.status(404).send("Not found");
-        }
-        res.send(order);
-    } catch (e) {
-        res.status(500).send(e);
+    const userId = req.params.userId;
+
+  try {
+    const result = await cart.aggregate([
+      { $match: { userId: userId } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "sanphams.productid",
+          foreignField: "productid",
+          as: "sanphams",
+        },
+      },
+      { $unwind: "$sanphams" },
+      {
+        $group: {
+          _id: "$_id",
+          userId: { $first: "$userId" },
+          tongtrigia: { $sum: { $multiply: ["$sanphams.price", "$sanphams.soluong"] } },
+          sanphams: { $push: "$sanphams" },
+        },
+      },
+    ]);
+
+    if (result.length === 0) {
+      return res.status(404).send("Not found");
     }
+
+    res.send(result[0]);
+  } catch (e) {
+    res.status(500).send(e);
+  }
 };
 
 //Tạo một cart cho khách hàng mới, truyền vào mã khách hàng userId
@@ -39,16 +61,11 @@ export const addSpToCart = async (req, res) => {
 
         const obj = {
             productid: sp.productid,
-            image: sp.image,
-            name: sp.name,
-            price: sp.price,
-            category: sp.category,
             soluong: item.soluong,
-            state: sp.state
         };
 
         kh.sanphams.push(obj);
-        kh.tongtrigia += obj.price * item.soluong; 
+        kh.tongtrigia += sp.price * item.soluong; 
         await kh.save();
         res.status(201).send(kh);
         
