@@ -38,6 +38,33 @@ export const getOrderByKH = async(req, res)=>{
     }
 }
 
+export const getOrderByStatus = async(req,res)=> {
+    try{
+        const status = req.params.tinhtrang;
+        const orders = await Order.aggregate([
+            // Tìm các đơn hàng với tình trạng được truyền vào
+            { $match: { tinhtrang: status } },
+            
+            // Liên kết với bảng user để lấy thông tin tên của khách hàng
+            {
+              $lookup: {
+                from: "users", // Tên bảng user
+                localField: "makh", // Trường liên kết trong bảng Order
+                foreignField: "userId", // Trường liên kết trong bảng User
+                as: "user" // Tên đối tượng được liên kết
+              }
+            },
+            
+            // Đổi tên trường makh thành name để hiển thị tên khách hàng thay vì mã khách hàng
+            { $addFields: { "name": { $arrayElemAt: ["$user.name", 0] } } },
+            { $unset: ["user"] }
+          ]);
+
+        res.send(orders)
+    } catch (e) {
+        res.status(500).send(e)
+    }
+}
 
 export const addOrder = async(req, res) => {
     const hd= new Order(req.body)
@@ -57,7 +84,7 @@ export const addOrder = async(req, res) => {
 
 export const updateOrder= async(req,res) => {
     const updates=Object.keys(req.body)
-    const allowUpdates=["makh","sanphams","ngaylap","tinhtrang","diachigiaohang"]
+    const allowUpdates=["makh","hinhanh","sanphams","ngaylap","tinhtrang","diachigiaohang"]
     const isValidOperation=updates.every((update)=>{
         return allowUpdates.includes(update)
     })

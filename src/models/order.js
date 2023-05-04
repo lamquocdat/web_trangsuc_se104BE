@@ -10,11 +10,12 @@ const orderSchema = new mongoose.Schema({
         require: true,
         trim: true
     },
-    // manv: {
-    //     type: String,
-    //     require: true,
-    //     trim: true
-    // },
+    hinhanh: {
+        type: String,
+        require: true,
+        trim: true,
+        default: ""
+    },
     sanphams: [{
         sanpham: {
             type: String,
@@ -49,8 +50,12 @@ const orderSchema = new mongoose.Schema({
     },
     tinhtrang: {
         type: String,
-        default: "Đã thanh toán"
+        default: "done"
     },
+    //processing: đang xử lý
+    //shipping: đang giao
+    //done: đã giao
+    //cancle: đã hủy
     diachigiaohang: {
         type: String,
         require: true
