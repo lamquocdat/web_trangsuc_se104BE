@@ -4,38 +4,49 @@ import product from "../models/product.js"
 // Get Cart By Makh: truyền makh
 export const getCartByMaKH = async (req, res) => {
     const userId = req.params.userId;
-
-  try {
-    const result = await cart.aggregate([
-      { $match: { userId: userId } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "sanphams.productid",
-          foreignField: "productid",
-          as: "sanphams",
+    try {
+      const cartItems = await cart.aggregate([
+        { $match: { userId: userId } },
+        {
+          $lookup: {
+            from: "products",
+            localField: "sanphams.productid",
+            foreignField: "productid",
+            as: "sanpham_chitiet"
+          }
         },
-      },
-      { $unwind: "$sanphams" },
-      {
-        $group: {
-          _id: "$_id",
-          userId: { $first: "$userId" },
-          tongtrigia: { $sum: { $multiply: ["$sanphams.price", "$sanphams.soluong"] } },
-          sanphams: { $push: "$sanphams" },
-        },
-      },
-    ]);
-
-    if (result.length === 0) {
-      return res.status(404).send("Not found");
+        {
+          $project: {
+            _id: 0,
+            userId: 1,
+            tongtrigia: 1,
+            sanphams: {
+              $map: {
+                input: "$sanphams",
+                as: "sp",
+                in: {
+                  productid: "$$sp.productid",
+                  soluong: "$$sp.soluong",
+                  name: { $arrayElemAt: ["$sanpham_chitiet.name", { $indexOfArray: ["$sanpham_chitiet.productid", "$$sp.productid"] }] },
+                  image: { $arrayElemAt: ["$sanpham_chitiet.image", { $indexOfArray: ["$sanpham_chitiet.productid", "$$sp.productid"] }] },
+                  price: { $arrayElemAt: ["$sanpham_chitiet.price", { $indexOfArray: ["$sanpham_chitiet.productid", "$$sp.productid"] }] },
+                  category: { $arrayElemAt: ["$sanpham_chitiet.category", { $indexOfArray: ["$sanpham_chitiet.productid", "$$sp.productid"] }] }
+                }
+              }
+            }
+          }
+        }
+      ]);
+      if (cartItems.length === 0) {
+        return res.status(404).send("Cart not found");
+      }
+      res.send(cartItems[0]);
+    } catch (e) {
+      console.log(e);
+      res.status(500).send(e);
     }
-
-    res.send(result[0]);
-  } catch (e) {
-    res.status(500).send(e);
-  }
-};
+  };
+  
 
 //Tạo một cart cho khách hàng mới, truyền vào mã khách hàng userId
 export const addCart = async (req,res)=> {
