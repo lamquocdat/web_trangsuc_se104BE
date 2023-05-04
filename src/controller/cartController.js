@@ -87,24 +87,40 @@ export const addSpToCart = async (req, res) => {
 
 // Delete sp from products: truyền userId, masp
 export const deleteSp = async (req, res) => {
-    const item = req.params;
-    try {
-        const order = await cart.findOne({ makh: item.userId });
-        if (!order) {
-            return res.status(404).send("Not found Customer");
-        }
+  const item = req.params;
+  try {
+      // Tìm cart của user có userId tương ứng
+      const cartItem = await cart.findOne({ userId: item.userId });
+      if (!cartItem) {
+          return res.status(404).send("Cart not found");
+      }
 
-        order.sanphams = order.sanphams.filter((sp) => sp.productid !== item.productid);
-        order.tongtrigia = order.sanphams.reduce((acc, currentValue) => {
-            return acc + currentValue.price * currentValue.soluong;
-        }, 0);
+      // Tìm sản phẩm cần xóa trong sanphams của cart
+      const productToDelete = cartItem.sanphams.find((sp) => sp.productid === item.productid);
+      if (!productToDelete) {
+          return res.status(404).send("Product not found in cart");
+      }
 
-        order.save();
-        res.send(order);
-    } catch (e) {
-        res.status(500).send(e);
-    }
+      // Tìm sản phẩm tương ứng trong bảng product để lấy giá
+      const productItem = await product.findOne({ productid: item.productid });
+      if (!productItem) {
+          return res.status(404).send("Product not found");
+      }
+
+      // Tính lại giá trị của tongtrigia sau khi xóa sản phẩm đó
+      cartItem.tongtrigia -= productItem.price * productToDelete.soluong;
+
+      // Lọc bỏ sản phẩm cần xóa trong sanphams của cart
+      cartItem.sanphams = cartItem.sanphams.filter((sp) => sp.productid !== item.productid);
+
+      // Lưu lại kết quả của cart
+      await cartItem.save();
+      res.send(cartItem);
+  } catch (e) {
+      res.status(500).send(e);
+  }
 };
+
 
 // Update so luong sp trong cart
 // Cần truyền vào userId, productid, soluong
@@ -122,10 +138,12 @@ export const updateCart = async (req, res) => {
             return res.status(404).send("Not found product in cart!");
         }
 
+        const pro = await product.findOne({productid: sp.productid})
+        order.tongtrigia += (item.soluong - sp.soluong)*pro.price
         sp.soluong = item.soluong;
-        order.tongtrigia = order.sanphams.reduce((acc, currentValue) => {
-            return acc + currentValue.price * currentValue.soluong;
-        }, 0);
+        // order.tongtrigia = order.sanphams.reduce((acc, currentValue) => {
+        //     return acc + currentValue.price * currentValue.soluong;
+        // }, 0);
         order.markModified('sanphams');
         await order.save();
         res.send(order);
