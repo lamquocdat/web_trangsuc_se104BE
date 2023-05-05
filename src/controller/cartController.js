@@ -30,7 +30,8 @@ export const getCartByMaKH = async (req, res) => {
                   name: { $arrayElemAt: ["$sanpham_chitiet.name", { $indexOfArray: ["$sanpham_chitiet.productid", "$$sp.productid"] }] },
                   image: { $arrayElemAt: ["$sanpham_chitiet.image", { $indexOfArray: ["$sanpham_chitiet.productid", "$$sp.productid"] }] },
                   price: { $arrayElemAt: ["$sanpham_chitiet.price", { $indexOfArray: ["$sanpham_chitiet.productid", "$$sp.productid"] }] },
-                  category: { $arrayElemAt: ["$sanpham_chitiet.category", { $indexOfArray: ["$sanpham_chitiet.productid", "$$sp.productid"] }] }
+                  category: { $arrayElemAt: ["$sanpham_chitiet.category", { $indexOfArray: ["$sanpham_chitiet.productid", "$$sp.productid"] }] },
+                  dvt: { $arrayElemAt: ["$sanpham_chitiet.dvt", { $indexOfArray: ["$sanpham_chitiet.productid", "$$sp.productid"] }] },
                 }
               }
             }
