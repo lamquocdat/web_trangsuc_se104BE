@@ -11,6 +11,11 @@ const productSchema = new mongoose.Schema({
     of: String,
     default: "Chưa có thông tin",
   },
+  dvt: {
+    type: String,
+    require: true,
+    default: "Chiếc",
+  },
 });
 
 const Product = mongoose.model("Product", productSchema);
