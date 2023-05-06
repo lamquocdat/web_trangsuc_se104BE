@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 dotenv.config();
 import "./database/mongoose.js";
 import cors from "cors";
-import sampleRouter from "../src/routers/sampleRouter.js";
 import userRouter from "../src/routers/userRouter.js";
 import productRouter from "../src/routers/productRouter.js";
 import orderRouter from "../src/routers/orderRouter.js";
@@ -17,7 +16,6 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 //Router:
-app.use(sampleRouter);
 app.use(productRouter);
 app.use(userRouter);
 app.use(orderRouter);
