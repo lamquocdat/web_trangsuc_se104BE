@@ -61,7 +61,7 @@ export const addCart = async (req,res)=> {
     }
 }
 
-// Add Product vào Order: truyền makh, masp, mausac, soluong
+// Add Product vào Order: truyền userId, productid, soluong
 export const addSpToCart = async (req, res) => {
     const item = req.body;
     try {
@@ -70,16 +70,26 @@ export const addSpToCart = async (req, res) => {
         if (!sp) {
             return res.status(404).send("Not found product");
         }
+        //kiểm tra xem sp có nằm trong kh không
+        const hasItem = kh.sanphams.some((sanpham) => sanpham.productid === sp.productid);
 
-        const obj = {
-            productid: sp.productid,
-            soluong: item.soluong,
-        };
+        if (hasItem) {
+          // Nếu sản phẩm đã có trong giỏ hàng, cập nhật số lượng
+          const existingItem = kh.sanphams.find((sanpham) => sanpham.productid === sp.productid);
+          existingItem.soluong += item.soluong;
+      } else {
+          // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới
+          const obj = {
+              productid: sp.productid,
+              soluong: item.soluong,
+          };
+          kh.sanphams.push(obj);
+      }
 
-        kh.sanphams.push(obj);
-        kh.tongtrigia += sp.price * item.soluong; 
-        await kh.save();
-        res.status(201).send(kh);
+      kh.tongtrigia += sp.price * item.soluong; 
+      kh.markModified('sanphams')
+      await kh.save();
+      res.status(201).send(kh);
         
     } catch (e) {
         res.status(400).send(e);
