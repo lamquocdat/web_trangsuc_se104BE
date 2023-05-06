@@ -122,6 +122,24 @@ export const deleteSp = async (req, res) => {
   }
 };
 
+export const refreshCart = async(req,res)=> {
+  const Id = req.body.userId;
+  try{
+    const giohang = await cart.findOne({userId: Id})
+    if(!giohang){
+      return res.status(404).send("Not found cart!");
+    }
+    giohang.sanphams = [];
+    giohang.tongtrigia = 0;
+    giohang.markModified(['sanphams','tongtrigia'])
+    await giohang.save();
+    res.send(giohang);
+  }
+  catch(error){
+    res.status(500).send(error);
+  }
+}
+
 
 // Update so luong sp trong cart
 // Cần truyền vào userId, productid, soluong
