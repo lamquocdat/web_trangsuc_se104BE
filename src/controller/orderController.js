@@ -152,7 +152,7 @@ export const deleteOrder = async(req, res) => {
         if(!hd)
             res.status(404).send("Not found!")
         if (hd.hinhanh) {
-            fs.unlink(`./public/${hd.hinhanh}`, (err) => {
+            fs.unlink(`./src/${hd.hinhanh}`, (err) => {
                 if (err) {
                     console.log(err);
                 }
