@@ -29,7 +29,7 @@ app.use(serviceRouter);
 const currentFilePath = new URL(import.meta.url).pathname;
 const currentDirPath = path.dirname(currentFilePath);
 app.use('/confirms', express.static(path.join(currentDirPath, 'src','confirms')));
-
+console.log(currentDirPath)
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -37,6 +37,12 @@ app.use(function (req, res, next) {
     "Origin, X-Requested-With, Content-Type, Accept"
   );
   next();
+});
+
+// API endpoint để lấy hình ảnh với tên file là "filename"
+app.get('/confirms/:filename', function(req, res){
+  const imagePath = path.join(currentDirPath,'confirms', req.params.filename);
+  res.sendFile(imagePath.slice(1));
 });
 app.listen(port, () => {
   console.log("Server is up on PORT " + port);
