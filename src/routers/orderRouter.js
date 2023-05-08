@@ -3,20 +3,8 @@ const router=express.Router()
 import * as orderController from '../controller/orderController.js'
 import multer from 'multer';
 
-//Middleware để lưu hình ảnh từ trường hinhanh vào trong thư mục confirms
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'src/confirms/')
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        const extension = file.originalname.split('.').pop();
-        cb(null, file.fieldname + '-' + uniqueSuffix + '.' + extension)
-    }
-});
-
-const upload = multer({ storage: storage });
-
+// Khởi tạo đối tượng multer để xử lý việc upload file từ client
+const upload = multer({ storage: multer.memoryStorage() });
 router
     .get("/order", orderController.getAllOrder)
     .get("/order/:id", orderController.getOrderById)
