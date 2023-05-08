@@ -1,5 +1,7 @@
 import Order from "../models/order.js";
 import User from "../models/user.js"
+// import multer from 'multer';
+ import fs from 'fs';
 
 export const getAllOrder= async(req,res)=>{
     try{
@@ -93,9 +95,23 @@ export const addOrder = async(req, res) => {
     }
 }
 
-export const updateOrder= async(req,res) => {
+//Middleware để lưu hình ảnh từ trường hinhanh vào trong thư mục confirms
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, 'src/confirms/')
+//     },
+//     filename: function (req, file, cb) {
+//         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+//         const extension = file.originalname.split('.').pop();
+//         cb(null, file.fieldname + '-' + uniqueSuffix + '.' + extension)
+//     }
+// });
+// const upload = multer({ storage: storage });
+// export const updateConfirm = upload.single('hinhanh');
+
+export const updateOrder=  async(req,res) => {
     const updates=Object.keys(req.body)
-    const allowUpdates=["userId","hinhanh","sanphams","ngaylap","tinhtrang","diachigiaohang"]
+    const allowUpdates=["userId", "hinhanh", "sanphams", "ngaylap", "tinhtrang", "diachigiaohang"]
     const isValidOperation=updates.every((update)=>{
         return allowUpdates.includes(update)
     })
@@ -108,6 +124,21 @@ export const updateOrder= async(req,res) => {
         updates.forEach((update)=>{
             hd[update]=req.body[update]
         })
+
+        // Sử dụng thư viện fs để lưu file ảnh vào thư mục confirms/
+        if (req.file) {
+            const fileName = req.file.filename;
+            const imagePath = `confirms/${fileName}`;
+            
+            // Sử dụng thư viện fs để lưu file ảnh vào thư mục confirms/
+            fs.rename(req.file.path, `src/${imagePath}`, function(err) {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).send({ error: "Could not save image" });
+                }
+            });
+            hd.hinhanh = imagePath; // lưu đường dẫn của file ảnh vào đối tượng order
+        }
         await hd.save()
         res.send(hd)
     } catch(e){
@@ -120,6 +151,13 @@ export const deleteOrder = async(req, res) => {
         const hd = await Order.findByIdAndDelete({_id: req.params.id})
         if(!hd)
             res.status(404).send("Not found!")
+        if (hd.hinhanh) {
+            fs.unlink(`./public/${hd.hinhanh}`, (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        }
         res.send(hd);
     } catch (e) {
         res.status(500).send(e)
