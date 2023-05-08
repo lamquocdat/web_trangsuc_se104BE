@@ -1,6 +1,5 @@
 import Order from "../models/order.js";
 import User from "../models/user.js"
-// import multer from 'multer';
  import fs from 'fs';
 
 export const getAllOrder= async(req,res)=>{
@@ -94,20 +93,6 @@ export const addOrder = async(req, res) => {
         res.status(400).send(e)
     }
 }
-
-//Middleware để lưu hình ảnh từ trường hinhanh vào trong thư mục confirms
-// const storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//         cb(null, 'src/confirms/')
-//     },
-//     filename: function (req, file, cb) {
-//         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-//         const extension = file.originalname.split('.').pop();
-//         cb(null, file.fieldname + '-' + uniqueSuffix + '.' + extension)
-//     }
-// });
-// const upload = multer({ storage: storage });
-// export const updateConfirm = upload.single('hinhanh');
 
 export const updateOrder=  async(req,res) => {
     const updates=Object.keys(req.body)
