@@ -105,11 +105,13 @@ export const updateOrder=  async(req,res) => {
     try{
         const hd=await Order.findOne({_id: req.params.id})
         if(!hd) return res.status(404).send()
-        
-        // Sử dụng thư viện fs để lưu file ảnh vào thư mục confirms/
+        // lưu file ảnh vào thư mục confirms trong firebase
         if (req.file) {
             const storage = getStorage();
-            const storageRef = ref(storage, `confirms/${req.file.originalname}`);
+            const fileExtension = req.file.originalname.split('.').pop(); //đuôi file ảnh
+            const today = new Date();
+            const timestamp = `${today.getMilliseconds()}:${today.getMinutes()}:${today.getHours()}-${today.getDate()}-${today.getMonth()+1}-${today.getFullYear()}`; //thời gian đăng lên firebase
+            const storageRef = ref(storage, `confirms/${req.file.originalname.split('.').shift()}-${timestamp}.${fileExtension}`);
             const metadata={
                 contentType: req.file.minetype,
             };
