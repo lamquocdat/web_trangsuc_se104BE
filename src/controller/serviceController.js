@@ -26,6 +26,17 @@ export const getServiceById = async(req, res)=>{
         res.status(500).send(e)
     }
 }
+
+export const getServiceBySID = async (req,res)=> {
+  try{
+      const sid = req.params.s_id;
+      const service = await Service.find({s_id: sid})
+      res.send(service);
+  }
+  catch(e){
+      res.status(500).send(e)
+  }
+}
   //Thêm 
   
     export const addService = async(req, res)=>{

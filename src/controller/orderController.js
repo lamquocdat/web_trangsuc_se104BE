@@ -1,5 +1,6 @@
 import Order from "../models/order.js";
 import User from "../models/user.js"
+import {getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject} from "firebase/storage"
 
 export const getAllOrder= async(req,res)=>{
     try{
@@ -14,7 +15,7 @@ export const getOrderById = async(req, res)=>{
     try {
         const order = await Order.findOne({_id:req.params.id})
         if (!order)
-            res.status(404).send("Not found!")
+        res.status(404).send("Not found!")
         res.send(order)
     } catch (e) {
         res.status(500).send(e)
@@ -31,7 +32,7 @@ export const getOrderByKH = async(req, res)=>{
         }
         const order = await Order.find({userId: kh.userId})
         if (!order)
-            res.status(404).send("Not found!")
+        res.status(404).send("Not found!")
         res.send(order)
     } catch (e) {
         res.status(500).send(e)
@@ -47,19 +48,19 @@ export const getOrderByStatus = async(req,res)=> {
             
             // Liên kết với bảng user để lấy thông tin tên của khách hàng
             {
-              $lookup: {
-                from: "users", // Tên bảng user
-                localField: "userId", // Trường liên kết trong bảng Order
-                foreignField: "userId", // Trường liên kết trong bảng User
-                as: "user" // Tên đối tượng được liên kết
-              }
+                $lookup: {
+                    from: "users", // Tên bảng user
+                    localField: "userId", // Trường liên kết trong bảng Order
+                    foreignField: "userId", // Trường liên kết trong bảng User
+                    as: "user" // Tên đối tượng được liên kết
+                }
             },
             
             // Đổi tên trường userId thành name để hiển thị tên khách hàng thay vì mã khách hàng
             { $addFields: { "name": { $arrayElemAt: ["$user.name", 0] } } },
             { $unset: ["user"] }
-          ]);
-
+        ]);
+        
         res.send(orders)
     } catch (e) {
         res.status(500).send(e)
@@ -93,9 +94,9 @@ export const addOrder = async(req, res) => {
     }
 }
 
-export const updateOrder= async(req,res) => {
+export const updateOrder=  async(req,res) => {
     const updates=Object.keys(req.body)
-    const allowUpdates=["userId","hinhanh","sanphams","ngaylap","tinhtrang","diachigiaohang"]
+    const allowUpdates=["userId", "hinhanh", "sanphams", "ngaylap", "tinhtrang", "diachigiaohang"]
     const isValidOperation=updates.every((update)=>{
         return allowUpdates.includes(update)
     })
@@ -104,10 +105,28 @@ export const updateOrder= async(req,res) => {
     try{
         const hd=await Order.findOne({_id: req.params.id})
         if(!hd) return res.status(404).send()
+        // lưu file ảnh vào thư mục confirms trong firebase
+        if (req.file) {
+            const storage = getStorage();
+            const fileExtension = req.file.originalname.split('.').pop(); //đuôi file ảnh
+            const today = new Date();
+            const timestamp = `${today.getMilliseconds()}:${today.getMinutes()}:${today.getHours()}-${today.getDate()}-${today.getMonth()+1}-${today.getFullYear()}`; //thời gian đăng lên firebase
+            const storageRef = ref(storage, `confirms/${req.file.originalname.split('.').shift()}-${timestamp}.${fileExtension}`);
+            const metadata={
+                contentType: req.file.minetype,
+            };
+            //upload
+            const snapshot = await uploadBytesResumable(storageRef, req.file.buffer, metadata);
+            //lấy link ảnh
+            const downloadURL = await getDownloadURL(snapshot.ref);
+            hd.hinhanh = downloadURL;
+        }
         
+        //Cập nhật các thông tin của order
         updates.forEach((update)=>{
-            hd[update]=req.body[update]
+            if(update !=='hinhanh') hd[update]=req.body[update]
         })
+        
         await hd.save()
         res.send(hd)
     } catch(e){
@@ -120,6 +139,13 @@ export const deleteOrder = async(req, res) => {
         const hd = await Order.findByIdAndDelete({_id: req.params.id})
         if(!hd)
             res.status(404).send("Not found!")
+        if(hd.hinhanh!==''){
+            const storage = getStorage();
+            const url = new URL(hd.hinhanh);
+            const filename = decodeURIComponent(url.pathname.split('/').pop());
+            const fileRef = ref(storage, filename);
+            await deleteObject(fileRef)
+        }
         res.send(hd);
     } catch (e) {
         res.status(500).send(e)
