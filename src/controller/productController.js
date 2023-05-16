@@ -34,7 +34,7 @@ export default class ProductController {
         (total, product) => total + product.quantity_sold,
         0
       );
-      res.json({ soldCount});  
+      res.json({ soldCount });
     } catch (error) {
       return res.status(400).json({ error: error.message });
     }
@@ -78,6 +78,24 @@ export default class ProductController {
       return res.json(deletedProduct);
     } catch (error) {
       return res.status(400).json({ error: error.message });
+    }
+  }
+
+  static async searchProduct(req, res) {
+    const { searchTerm } = req.query;
+
+    try {
+      const products = await Product.find({
+        $or: [
+          { productid: { $regex: searchTerm, $options: "i" } },
+          { name: { $regex: searchTerm, $options: "i" } },
+        ],
+      });
+
+      res.json(products);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Something went wrong" });
     }
   }
 }
