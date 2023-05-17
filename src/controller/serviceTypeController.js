@@ -67,6 +67,21 @@ export const getServiceTypeBySVTID = async (req,res)=> {
       return res.status(400).json({ error: error.message });
     }
   }
+  export const updateServiceTypeBySVTID = async(req, res)=>{
+    try {
+      console.debug("Updating service type by stv_id ...");
+      const svtid = req.params.svt_id;
+      const updatedServiceType = await ServiceType.findOneAndUpdate({svt_id:svtid}, req.body, {
+        new: true,
+      });
+      if (!updatedServiceType) {
+        return res.status(404).json({ error: "Service type not found." });
+      }
+      return res.json(updatedServiceType);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
     
   //Xóa
 
@@ -74,6 +89,20 @@ export const getServiceTypeBySVTID = async (req,res)=> {
     try {
       console.debug("Deleting service type...");
       const deletetServiceType = await ServiceType.findOneAndDelete({_id:req.params.id});
+      if (!deletetServiceType) {
+        return res.status(404).json({ error: "Service type not found." });
+      }
+      return res.json(deletetServiceType);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+  export const deleteServiceTypeBySVTID = async(req, res)=>{
+    try {
+      console.debug("Deleting service type...");
+      const svtid = req.params.svt_id;
+      const deletetServiceType = await ServiceType.findOneAndDelete({svt_id:svtid});
       if (!deletetServiceType) {
         return res.status(404).json({ error: "Service type not found." });
       }

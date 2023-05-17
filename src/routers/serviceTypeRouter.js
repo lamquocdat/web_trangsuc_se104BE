@@ -8,6 +8,8 @@ router
   .get("/serviceType/svtid/:svt_id", ServiceTypeController.getServiceTypeBySVTID)
   .post("/serviceType", ServiceTypeController.addServiceType)
   .put("/serviceType/:id", ServiceTypeController.updateServiceType)
-  .delete("/serviceType/:id", ServiceTypeController.deleteServiceType);
+  .put("/serviceType/svtid/:svt_id", ServiceTypeController.updateServiceTypeBySVTID)
+  .delete("/serviceType/:id", ServiceTypeController.deleteServiceType)
+  .delete("/serviceType/svtid/:svt_id", ServiceTypeController.deleteServiceTypeBySVTID);
 
 export default router;
