@@ -21,9 +21,47 @@ async function sendOTPtoEmail(email, otp) {
   let info = await transporter.sendMail({
     from: 'solokill2001@gmail.com', // sender address
     to: email, // list of receivers
-    subject: 'OTP Verification Code', // subject line
-    text: `Your OTP verification code is ${otp}.`, // plain text body
-    html: `Your OTP verification code is <b>${otp}</b>.`, // html body
+    subject: 'Mã xác nhận quên mật khẩu', // subject line
+
+    html: `
+    <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify your login</title>
+  <!--[if mso]><style type="text/css">body, table, td, a { font-family: Arial, Helvetica, sans-serif !important; }</style><![endif]-->
+</head>
+
+<body style="font-family: Helvetica, Arial, sans-serif; margin: 0px; padding: 0px; background-color: #ffffff;">
+  <table role="presentation"
+    style="width: 100%; border-collapse: collapse; border: 0px; border-spacing: 0px; font-family: Arial, Helvetica, sans-serif; background-color: rgb(239, 239, 239);">
+    <tbody>
+      <tr>
+        <td align="center" style="padding: 1rem 2rem; vertical-align: top; width: 100%;">
+          <table role="presentation" style="max-width: 600px; border-collapse: collapse; border: 0px; border-spacing: 0px; text-align: left;">
+            <tbody>
+              <tr>
+                <td style="padding: 40px 0px 0px;">
+                  <div style="text-align: left;">
+                    <div style="padding-bottom: 20px;"><img src="https://i.ibb.co/Qbnj4mz/logo.png" alt="Company" style="width: 56px;"></div>
+                  </div>
+                  <div style="padding: 20px; background-color: rgb(255, 255, 255);">
+                    <div style="color: rgb(0, 0, 0); text-align: left;">
+                      <h1 style="margin: 1rem 0">Mã OTP</h1>
+                      <p style="padding-bottom: 16px">Hãy sử dụng mã OTP bên dưới để đặt lại mật khẩu.</p>
+                      <p style="padding-bottom: 16px"><strong style="font-size: 130%">${otp}</strong></p>
+                      <p style="padding-bottom: 16px">Nếu bạn không gửi yêu cầu, hãy bỏ qua tin nhắn này.</p>
+                      <p style="padding-bottom: 16px">Xin cám ơn,<br>Dialuxury.</p>
+                    </div>
+                  </div>
+                
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  `,
   });
 
   console.log('Message sent: %s', info.messageId);
@@ -93,10 +131,12 @@ export async function login(req, res) {
   try {
     UserModel.findOne({ email })
       .then(function (user) {
+        console.log(1);
         bcrypt
           .compare(password, user.password)
           .then(function (passwordCheck) {
-            if (!passwordCheck) return res.status(400).send('wrong!');
+            console.log(passwordCheck);
+            if (!passwordCheck) return res.status(402).send('wrong!');
 
             //create JWT TOKEN
             const token = jwt.sign(
@@ -104,7 +144,7 @@ export async function login(req, res) {
                 userId: user._id,
                 email: user.email,
               },
-              ENV.JWT_SECRET,
+              'WNi3oF3NfduzvwUiOPlnDdUUjIlMcv7fX28ms3udpPM',
 
               { expiresIn: '24h' }
             );
@@ -115,11 +155,12 @@ export async function login(req, res) {
             });
           })
           .catch(function (error) {
-            return res.status(400).send('Password is not correct');
+            console.log(error);
+            return res.status(401).send('Password is not correct');
           });
       })
       .catch(function (error) {
-        return res.status(404).send('email not found');
+        return res.status(409).send('email not found');
       });
   } catch (error) {
     return res.status(500).send({ error });
@@ -169,6 +210,9 @@ export async function getUser(req, res) {
     return res.status(409).send({ error: 'can not find user data' });
   }
 }
+
+export async function schedule(req, res) {}
+
 export async function getUserbyId(req, res) {
   const { _id } = req.params; //get parameter
   try {

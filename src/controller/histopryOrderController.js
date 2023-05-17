@@ -1,5 +1,4 @@
 import OrderModel from '../models/order.js';
-import User from '../models/user.js';
 
 export async function getAllOrders(req, res) {
   try {
@@ -22,3 +21,37 @@ export async function getOrderbyId(req, res) {
     console.log(error);
   }
 }
+export async function cancelOrderById(req, res) {
+  try {
+    const { tinhtrang } = req.body;
+
+    const _orderid = req.body._orderid;
+    OrderModel.updateOne({ _id: _orderid }, { tinhtrang: tinhtrang })
+      .then(function (data) {
+        res.status(201).send(data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function deliveredOrderById(req, res) {
+  try {
+    const { tinhtrang } = req.body;
+
+    const _orderid = req.body._orderid;
+    OrderModel.updateOne({ _id: _orderid }, { tinhtrang: tinhtrang })
+      .then(function (data) {
+        res.status(201).send(data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  } catch (error) {
+    console.log(error);
+  }
+}
+// UserModel.updateOne({ _id: _id }, body)
