@@ -14,5 +14,3 @@ router
     .post("/order", orderController.addOrder)
     .put("/order/:id", upload.single('hinhanh'), orderController.updateOrder)
     .delete("/order/:id", orderController.deleteOrder)
-
-export default router
