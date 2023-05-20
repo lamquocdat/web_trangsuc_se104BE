@@ -14,49 +14,9 @@ const serviceSchema = new mongoose.Schema({
         require: true,
         trim: true
     },
-	serviceTypes: [{
-        name: {
-            type: String,
-            require: true,
-        },
-        number: {
-            type: Number,
-            require: true,
-            default: 1,
-        },
-     
-        price: {
-            type: Number,
-            require: true,
-        },
-		total: {
-            type: Number,
-            require: true,
-			default: function() {
-				return this.price * this.number
-			  }
-        },
-        payFirst:{
-            type: Number,
-            require: true,
-        },
-		payLeft:{
-            type: Number,
-            require: true,
-			default: function() {
-				return this.total - this.payFirst
-			  }
-        },
-		ngaygiao: {
-			type: String,
-			required: true,
-		},
-		tinhtrang: {
-			type: Boolean,
-			required: true,
-		},
-    }],
-	
+	serviceTypes: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'ServiceType', required: true }],
+
 	s_number:{
 		type: Number,
 		require: true,
@@ -65,10 +25,7 @@ const serviceSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	s_status: {
-		type: Boolean,
-		required: true,
-	},
+
 });
 
 const Service = mongoose.model("Service",serviceSchema);

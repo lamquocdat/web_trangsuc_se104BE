@@ -1,10 +1,10 @@
 import Service from "../models/service.js";
-
+import ServiceType from "../models/serviceType.js";
 
   //Lấy danh sách dịch vụ
   export const getAllService = async(req, res)=>{
     try {
-      const service = await Service.find();
+      const service = await Service.find() .populate("serviceTypes");
       if (!service) {
         throw "error";
       }
@@ -18,7 +18,7 @@ import Service from "../models/service.js";
 export const getServiceById = async(req, res)=>{
     try {
         
-        const service = await Service.findById({_id:req.params.id})
+        const service = await Service.findById({_id:req.params.id}) .populate("serviceTypes")
         if (!service)
             res.status(404).send("Not found!")
         res.send(service)
@@ -30,7 +30,7 @@ export const getServiceById = async(req, res)=>{
 export const getServiceBySID = async (req,res)=> {
   try{
       const sid = req.params.s_id;
-      const service = await Service.find({s_id: sid})
+      const service = await Service.find({s_id: sid}) .populate("serviceTypes")
       res.send(service);
   }
   catch(e){
@@ -41,6 +41,9 @@ export const getServiceBySID = async (req,res)=> {
   
     export const addService = async(req, res)=>{
     try {
+      const serviceType = await ServiceType.findOne(req.body.svt_id)
+        if (!serviceType)
+            res.status(404).send("Not found!")
       console.debug("Adding service...");
       const service = new Service({ ...req.body });
       await service.save();
@@ -51,25 +54,25 @@ export const getServiceBySID = async (req,res)=> {
   }
 //   //Cập nhật
 
-    export const updateService = async(req, res)=>{
-    try {
-      console.debug("Updating service...");
-      const updatedService = await Service.findByIdAndUpdate({_id:req.params.id},
-        {...req.body,
-          //tính toán s_total và s_payLeft
-        total:req.body.price*req.body.number,  payLeft:req.body.price*req.body.number-req.body.payFirst} ,
-        {
-        new: true,
-      });
+  //   export const updateService = async(req, res)=>{
+  //   try {
+  //     console.debug("Updating service...");
+  //     const updatedService = await Service.findByIdAndUpdate({_id:req.params.id},
+  //       {...req.body,
+  //         //tính toán s_total và s_payLeft
+  //       total:req.body.price*req.body.number,  payLeft:req.body.price*req.body.number-req.body.payFirst} ,
+  //       {
+  //       new: true,
+  //     });
       
-      if (!updatedService) {
-        return res.status(404).json({ error: "Service not found." });
-      }
-      return res.json(updatedService);
-    } catch (error) {
-      return res.status(400).json({ error: error.message });
-    }
-  }
+  //     if (!updatedService) {
+  //       return res.status(404).json({ error: "Service not found." });
+  //     }
+  //     return res.json(updatedService);
+  //   } catch (error) {
+  //     return res.status(400).json({ error: error.message });
+  //   }
+  // }
   //Xóa
 
     export const deleteService = async(req, res)=>{

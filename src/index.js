@@ -12,6 +12,7 @@ import vouchersRouter from "../src/routers/vouchersRouter.js";
 import serviceRouter from "../src/routers/serviceRouter.js";
 import warehouseRouter from "../src/routers/warehouseRouter.js";
 import serviceTypeRouter from "../src/routers/serviceTypeRouter.js"
+
 //cấu hình để upload ảnh lên firebase
 import { initializeApp } from "firebase/app";
 const firebaseConfig = {
@@ -40,6 +41,7 @@ app.use(vouchersRouter);
 app.use(warehouseRouter);
 app.use(serviceRouter);
 app.use(serviceTypeRouter);
+
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
