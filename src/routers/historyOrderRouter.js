@@ -1,15 +1,15 @@
 import express from 'express';
 const router = express.Router();
-import * as orderController from '../controller/orderController.js';
+import * as orderController from '../controller/histopryOrderController.js';
 
-router
-  .get('/order', orderController.getAllOrder)
-  .get('/order/:id', orderController.getOrderById)
-  .get('/order/kh/:ten', orderController.getOrderByKH)
-  .get('/order/tinhtrang/:tinhtrang', orderController.getOrderByStatus)
-  .get('/order/hd/:mahd', orderController.getOrderByMahd)
-  .post('/order', orderController.addOrder)
-  .put('/order/:id', orderController.updateOrder)
-  .delete('/order/:id', orderController.deleteOrder);
+router.route('/orders/:_id').get(orderController.getAllOrders);
+router.route('/orderall').get(orderController.getAllOrdersAllUser);
+router.route('/orderdetail/:_orderid').get(orderController.getOrderbyId);
 
+router.route('/cancelorder').put(orderController.cancelOrderById);
+
+router.route('/deliveredorder').put(orderController.deliveredOrderById);
+
+router.route('/confirmorder').put(orderController.confirmOrderbyId);
+router.route('/schedule').post(orderController.scheduleMail);
 export default router;

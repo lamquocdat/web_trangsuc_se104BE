@@ -1,4 +1,4 @@
-import User from "../models/user.js";
+import User from '../models/user.js';
 
 export default class UserController {
   //Lấy danh sách người dùng:
@@ -6,11 +6,11 @@ export default class UserController {
     try {
       const user = await User.find();
       if (!user) {
-        throw "error";
+        throw 'error';
       }
-      return res.status(201).json(user);
+      return res.status(201).send(user);
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      return res.status(400).send({ error: error.message });
     }
   }
   //Lấy người dùng theo id:
@@ -19,7 +19,7 @@ export default class UserController {
       const { id } = req.params;
       const user = await User.findById(id);
       if (!user) {
-        throw "error";
+        throw 'error';
       }
       return res.status(201).json(user);
     } catch (error) {
@@ -29,7 +29,7 @@ export default class UserController {
   //Thêm người dùng:
   static async addUser(req, res) {
     try {
-      console.debug("Adding user...");
+      console.debug('Adding user...');
       const user = new User({ ...req.body });
       await user.save();
       return res.status(201).json(user);
@@ -40,13 +40,13 @@ export default class UserController {
   //Cập nhật thông tin người dùng:
   static async updateUser(req, res) {
     try {
-      console.debug("Updating User...");
+      console.debug('Updating User...');
       const { id } = req.params;
       const updatedUser = await User.findByIdAndUpdate(id, req.body, {
         new: true,
       });
       if (!updatedUser) {
-        return res.status(404).json({ error: "User not found." });
+        return res.status(404).json({ error: 'User not found.' });
       }
       return res.json(updatedUser);
     } catch (error) {
@@ -56,11 +56,11 @@ export default class UserController {
   //Xóa người dùng:
   static async deleteUser(req, res) {
     try {
-      console.debug("Deleting User...");
-      const { id } = req.params;
-      const deletedUser = await User.findOneAndDelete(id);
+      console.debug('Deleting User...');
+      const { _id } = req.params;
+      const deletedUser = await User.findOneAndDelete(_id);
       if (!deletedUser) {
-        return res.status(404).json({ error: "User not found." });
+        return res.status(404).json({ error: 'User not found.' });
       }
       return res.json(deletedUser);
     } catch (error) {
