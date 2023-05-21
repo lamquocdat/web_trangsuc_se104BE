@@ -5,10 +5,10 @@ const serviceSchema = new mongoose.Schema({
 		type: String,
 		unique: true,
 	},
-	s_name: {
-		type: String,
-		required: true,
-	},
+	// s_name: {
+	// 	type: String,
+	// 	required: true,
+	// },
 	makh: {
         type: String,  
         require: true,
@@ -17,10 +17,10 @@ const serviceSchema = new mongoose.Schema({
 	serviceTypes: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'ServiceType', required: true }],
 
-	s_number:{
-		type: Number,
-		require: true,
-	},
+	// s_number:{
+	// 	type: Number,
+	// 	require: true,
+	// },
 	s_date: {
 		type: String,
 		required: true,
