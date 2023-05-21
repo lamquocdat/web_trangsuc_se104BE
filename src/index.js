@@ -17,6 +17,7 @@ import morgan from 'morgan';
 import connect from './database/mongoose.js';
 //cấu hình để upload ảnh lên firebase
 import { initializeApp } from 'firebase/app';
+import historyOrderRouter from './routers/historyOrderRouter.js';
 const firebaseConfig = {
   apiKey: 'AIzaSyDt2XpoTVsNwqaJ1Rk0Z5TvtYWQukOjU84',
   authDomain: 'dialuxury.firebaseapp.com',
@@ -40,6 +41,7 @@ app.use(express.json());
 app.use(productRouter);
 app.use(userRouter);
 app.use(orderRouter);
+app.use(historyOrderRouter);
 app.use(cartRouter);
 app.use(router);
 app.use(vouchersRouter);
