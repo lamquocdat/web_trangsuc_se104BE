@@ -1,22 +1,18 @@
 import express from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
-// import './database/mongoose.js';
-import cors from 'cors';
+import "./database/mongoose.js";
+import cors from "cors";
+import userRouter from "../src/routers/userRouter.js";
+import productRouter from "../src/routers/productRouter.js";
+import orderRouter from "../src/routers/orderRouter.js";
+import cartRouter from "../src/routers/cartRouter.js";
+import router from "../src/routers/warehouseRouter.js";
+import vouchersRouter from "../src/routers/vouchersRouter.js";
+import serviceRouter from "../src/routers/serviceRouter.js";
+import warehouseRouter from "../src/routers/warehouseRouter.js";
+import serviceTypeRouter from "../src/routers/serviceTypeRouter.js"
 
-import userRouter from '../src/routers/userRouter.js';
-import productRouter from '../src/routers/productRouter.js';
-import orderRouter from '../src/routers/orderRouter.js';
-import morgan from 'morgan';
-import cartRouter from '../src/routers/cartRouter.js';
-import router from '../src/routers/warehouseRouter.js';
-import vouchersRouter from '../src/routers/vouchersRouter.js';
-import loginRouter from '../src/routers/LoginRouter.js';
-import connect from './database/mongoose.js';
-
-import serviceRouter from '../src/routers/serviceRouter.js';
-import warehouseRouter from '../src/routers/warehouseRouter.js';
-import serviceTypeRouter from '../src/routers/serviceTypeRouter.js';
 //cấu hình để upload ảnh lên firebase
 import { initializeApp } from 'firebase/app';
 import historyOrderRouter from './routers/historyOrderRouter.js';
@@ -51,6 +47,7 @@ app.use(warehouseRouter);
 app.use(serviceRouter);
 app.use(loginRouter);
 app.use(serviceTypeRouter);
+
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(

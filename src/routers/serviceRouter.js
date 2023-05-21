@@ -7,7 +7,7 @@ router
   .get("/service/:id", ServiceController.getServiceById)
   .get("/service/sid/:s_id", ServiceController.getServiceBySID)
   .post("/service", ServiceController.addService)
-  .put("/service/:id", ServiceController.updateService)
+  // .put("/service/:id", ServiceController.updateService)
   .delete("/service/:id", ServiceController.deleteService);
 
 export default router;
