@@ -1,26 +1,26 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const serviceSchema = new mongoose.Schema({
-	s_id: {
-		type: String,
-		unique: true,
-	},
-	
-	makh: {
-        type: String,  
-        require: true,
-        trim: true
+  makh: {
+    type: String,
+    require: true,
+    trim: true,
+  },
+  serviceTypes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ServiceType',
+      required: true,
     },
-	serviceTypes: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'ServiceType', required: true }],
+  ],
 
-	
-	s_date: {
-		type: String,
-		required: true,
-	},
-
+  s_date: {
+    type: String,
+  },
+  total: {
+    type: Number,
+  },
 });
 
-const Service = mongoose.model("Service",serviceSchema);
-export default Service;
+export default mongoose.model.Services ||
+  mongoose.model('Service', serviceSchema);

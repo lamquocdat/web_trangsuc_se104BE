@@ -39,12 +39,14 @@ export const getServiceTypeBySVTID = async (req, res) => {
 export const addServiceType = async (req, res) => {
   try {
     console.debug('Adding service type...');
-    const { svt_id } = req.body;
-    const found = await ServiceType.findOne({ svt_id: svt_id });
-    if (found) return res.status(201).send('existed');
+    const { svt_id, svt_name } = req.body;
+    const foundID = await ServiceType.findOne({ svt_id: svt_id });
+    if (foundID) return res.status(201).send('existedID');
+    const foundNAME = await ServiceType.findOne({ svt_name: svt_name });
+    if (foundNAME) return res.status(201).send('existedNAME');
     const serviceType = new ServiceType({ ...req.body });
     await serviceType.save();
-    return res.status(201).json(serviceType);
+    return res.status(201).send('OK');
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
@@ -73,6 +75,9 @@ export const updateServiceType = async (req, res) => {
 export const updateServiceTypeBySVTID = async (req, res) => {
   try {
     console.debug('Updating service type by stv_id ...');
+    const { svt_name } = req.body;
+    const foundNAME = await ServiceType.findOne({ svt_name: svt_name });
+    if (foundNAME) return res.status(201).send('existedNAME');
     const svtid = req.params.svt_id;
 
     const updatedServiceType = await ServiceType.findOneAndUpdate(
