@@ -65,7 +65,7 @@ export const addCart = async (req,res)=> {
 export const addSpToCart = async (req, res) => {
     const item = req.body;
     try {
-        const kh = await cart.findOne({ makh: item.userId });
+        const kh = await cart.findOne({ userId: item.userId });
         const sp = await product.findOne({ productid: item.productid });
         if (!sp) {
             return res.status(404).send("Not found product");
@@ -156,7 +156,7 @@ export const refreshCart = async(req,res)=> {
 export const updateCart = async (req, res) => {
     const item = req.body;
     try {
-        const order = await cart.findOne({ makh: item.userId });
+        const order = await cart.findOne({ userId: item.userId });
         const sp = await order.sanphams.find((i) => i.productid === item.productid);
 
         if (!order) {
