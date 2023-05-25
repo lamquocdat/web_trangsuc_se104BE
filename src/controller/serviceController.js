@@ -17,7 +17,7 @@ export const getAllService = async (req, res) => {
 
 export const getServiceById = async (req, res) => {
   try {
-    const service = await Service.findById({ _id: req.params.id }).populate(
+    const service = await Service.find({ _id: req.params.id }).populate(
       'serviceTypes'
     );
     if (!service) res.status(404).send('Not found!');
