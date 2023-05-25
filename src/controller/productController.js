@@ -13,6 +13,21 @@ export default class ProductController {
       return res.status(400).json({ error: error.message });
     }
   }
+
+  //sort và lấy 4 sản phẩm
+  static async sortAndgetAllProduct(req, res) {
+    try {
+      const sort = { _id: -1 };
+      const limit = 4;
+      const product = await Product.find().sort(sort).limit(limit);
+      if (!product) {
+        throw "error";
+      }
+      return res.status(201).json(product);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
   //Lấy sản phẩm theo id:
   static async getProductById(req, res) {
     try {
