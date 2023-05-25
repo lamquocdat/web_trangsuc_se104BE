@@ -6,6 +6,10 @@ const serviceSchema = new mongoose.Schema({
     require: true,
     trim: true,
   },
+  tenkh: {
+    type: String,
+    require: true,
+  },
   serviceTypes: [
     {
       type: mongoose.Schema.Types.ObjectId,
