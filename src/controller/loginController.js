@@ -1,7 +1,7 @@
 import UserModel from '../models/user.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-
+import cart from '../models/cart.js';
 import otpGenerator from 'otp-generator';
 import nodemailer from 'nodemailer';
 
@@ -105,14 +105,26 @@ export async function register(req, res) {
               // return save result as a response
               user
                 .save()
-                .then((result) =>
-                  res.status(201).send({ msg: 'User Register Successfully' })
-                )
+                .then((result) => {
+                  const cartCreate = cart.create({
+                    userId: result._id.toString(),
+                  });
+                  cartCreate
+                    .then(function () {
+                      res
+                        .status(201)
+                        .send({ msg: 'User Register Successfully' });
+                    })
+                    .catch(function (error) {
+                      console.log(error);
+                      res.status(501).send({ msg: 'cart error' });
+                    });
+                })
                 .catch((error) => res.status(500).send('Error when register'));
             })
             .catch((error) => {
               return res.status(500).send({
-                error: 'Enable to hashed password',
+                error: 'Unable to hashed password',
               });
             });
         }
@@ -152,6 +164,7 @@ export async function login(req, res) {
               msg: 'Login Successfully',
               _id: user._id,
               token,
+              ten: user.name,
             });
           })
           .catch(function (error) {

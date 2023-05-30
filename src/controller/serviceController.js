@@ -40,7 +40,7 @@ export const getServiceBySID = async (req, res) => {
 
 export const addService = async (req, res) => {
   try {
-    const { makh, serviceTypes, s_date, total } = req.body.body;
+    const { makh, ten, serviceTypes, s_date, total } = req.body.body;
 
     console.log(makh);
     const service = new Service({
@@ -48,6 +48,7 @@ export const addService = async (req, res) => {
       serviceTypes,
       s_date,
       total,
+      tenkh: ten,
     });
 
     // return save result as a response
