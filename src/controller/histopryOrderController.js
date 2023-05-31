@@ -91,12 +91,12 @@ export async function confirmOrderbyId(req, res) {
 // UserModel.updateOne({ _id: _id }, body)
 
 export async function scheduleMail(req, res) {
-  const { date, email } = req.body; //get parameter
+  const { date, email, total, _id } = req.body; //get parameter
 
   if (!date) return res.status(501).send({ error: 'invalid date' });
 
   try {
-    confirmScheduleMail(email, date);
+    confirmScheduleMail(email, date, total, _id);
 
     return res.status(201).send('ok');
   } catch (error) {

@@ -17,7 +17,10 @@ const serviceSchema = new mongoose.Schema({
       required: true,
     },
   ],
-
+  tinhtrang: {
+    type: String,
+    default: 'Đang chờ xác nhận',
+  },
   s_date: {
     type: String,
   },

@@ -1,9 +1,6 @@
 import nodemailer from 'nodemailer';
-
-async function confirmScheduleMail(email, date) {
-  date = new Date(date);
-  const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
-  date = date.toLocaleDateString(undefined, options);
+import Service from '../models/service.js';
+async function confirmScheduleMail(email, date, total, _id) {
   // create a nodemailer transporter using your SMTP credentials
   let transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -314,7 +311,7 @@ async function confirmScheduleMail(email, date) {
 
                             <div style="line-height: 160%; text-align: center; word-wrap: break-word;">
                               <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 22px; line-height: 35.2px;">Xin chào, </span></p>
-                              <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 18px; line-height: 28.8px;">Email này được gửi đến để xác nhận lịch hẹn tư vấn của bạn tại cửa hàng vào ngày ${date} đã được xác nhận thành công, mong bạn có thể 
+                              <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 18px; line-height: 28.8px;">Email này được gửi đến để xác nhận lịch hẹn tư vấn của bạn tại cửa hàng vào ngày ${date} đã được xác nhận thành công, với số tiền là ${total} VND. Mong bạn có thể 
                               đến cửa hàng để chúng tôi có thể tiến hành tư vấn </span></p>
                             </div>
 
@@ -531,6 +528,10 @@ async function confirmScheduleMail(email, date) {
 </body>
   `,
   });
+  const service = await Service.updateOne(
+    { _id: _id },
+    { tinhtrang: 'Đã xác nhận' }
+  );
 
   console.log('Message sent: %s', info.messageId);
   return Promise.resolve('ok');
