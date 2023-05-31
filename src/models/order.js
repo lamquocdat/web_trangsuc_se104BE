@@ -70,6 +70,9 @@ const orderSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
+    hinhthucthanhtoan: {
+      type: String,
+    },
     tongtien: {
       type: Number,
       default: 0,
