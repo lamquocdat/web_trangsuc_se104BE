@@ -106,6 +106,8 @@ export const updateOrder = async (req, res) => {
     'ngaylap',
     'tinhtrang',
     'diachigiaohang',
+    'hinhthucthanhtoan',
+    'tongtien'
   ];
   const isValidOperation = updates.every((update) => {
     return allowUpdates.includes(update);
