@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const serviceSchema = new mongoose.Schema({
   makh: {
@@ -13,13 +13,13 @@ const serviceSchema = new mongoose.Schema({
   serviceTypes: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'ServiceType',
+      ref: "ServiceType",
       required: true,
     },
   ],
   tinhtrang: {
     type: String,
-    default: 'Đang chờ xác nhận',
+    default: "Đang chờ xác nhận",
   },
   s_date: {
     type: String,
@@ -30,4 +30,4 @@ const serviceSchema = new mongoose.Schema({
 });
 
 export default mongoose.model.Services ||
-  mongoose.model('Service', serviceSchema);
+  mongoose.model("Service", serviceSchema);

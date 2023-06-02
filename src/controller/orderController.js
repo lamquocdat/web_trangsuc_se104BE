@@ -1,12 +1,12 @@
-import Order from '../models/order.js';
-import User from '../models/user.js';
+import Order from "../models/order.js";
+import User from "../models/user.js";
 import {
   getStorage,
   ref,
   uploadBytesResumable,
   getDownloadURL,
   deleteObject,
-} from 'firebase/storage';
+} from "firebase/storage";
 
 export const getAllOrder = async (req, res) => {
   try {
@@ -20,7 +20,7 @@ export const getAllOrder = async (req, res) => {
 export const getOrderById = async (req, res) => {
   try {
     const order = await Order.findOne({ _id: req.params.id });
-    if (!order) res.status(404).send('Not found!');
+    if (!order) res.status(404).send("Not found!");
     res.send(order);
   } catch (e) {
     res.status(500).send(e);
@@ -29,14 +29,14 @@ export const getOrderById = async (req, res) => {
 
 export const getOrderByKH = async (req, res) => {
   try {
-    const regex = new RegExp(req.params.ten, 'i');
+    const regex = new RegExp(req.params.ten, "i");
     const kh = await User.findOne({ name: regex });
     if (!kh) {
-      res.status(404).send('Không tìm thấy khách hàng (user) phù hợp!');
+      res.status(404).send("Không tìm thấy khách hàng (user) phù hợp!");
       return;
     }
     const order = await Order.find({ userId: kh.userId });
-    if (!order) res.status(404).send('Not found!');
+    if (!order) res.status(404).send("Not found!");
     res.send(order);
   } catch (e) {
     res.status(500).send(e);
@@ -53,16 +53,16 @@ export const getOrderByStatus = async (req, res) => {
       // Liên kết với bảng user để lấy thông tin tên của khách hàng
       {
         $lookup: {
-          from: 'users', // Tên bảng user
-          localField: 'userId', // Trường liên kết trong bảng Order
-          foreignField: 'userId', // Trường liên kết trong bảng User
-          as: 'user', // Tên đối tượng được liên kết
+          from: "users", // Tên bảng user
+          localField: "userId", // Trường liên kết trong bảng Order
+          foreignField: "userId", // Trường liên kết trong bảng User
+          as: "user", // Tên đối tượng được liên kết
         },
       },
 
       // Đổi tên trường userId thành name để hiển thị tên khách hàng thay vì mã khách hàng
-      { $addFields: { name: { $arrayElemAt: ['$user.name', 0] } } },
-      { $unset: ['user'] },
+      { $addFields: { name: { $arrayElemAt: ["$user.name", 0] } } },
+      { $unset: ["user"] },
     ]);
 
     res.send(orders);
@@ -86,8 +86,8 @@ export const addOrder = async (req, res) => {
   try {
     if ((await (await Order.find({})).length) !== 0) {
       const hdLast = await (await Order.find({})).splice(-1);
-      const mahdLast = hdLast[0].mahd.substring(2) || '0';
-      const newmahd = 'HD' + Number(Number(mahdLast) + 1);
+      const mahdLast = hdLast[0].mahd.substring(2) || "0";
+      const newmahd = "HD" + Number(Number(mahdLast) + 1);
       hd.mahd = newmahd;
     }
     await hd.save();
@@ -100,19 +100,19 @@ export const addOrder = async (req, res) => {
 export const updateOrder = async (req, res) => {
   const updates = Object.keys(req.body);
   const allowUpdates = [
-    'userId',
-    'hinhanh',
-    'sanphams',
-    'ngaylap',
-    'tinhtrang',
-    'diachigiaohang',
-    'hinhthucthanhtoan',
-    'tongtien'
+    "userId",
+    "hinhanh",
+    "sanphams",
+    "ngaylap",
+    "tinhtrang",
+    "diachigiaohang",
+    "hinhthucthanhtoan",
+    "tongtien",
   ];
   const isValidOperation = updates.every((update) => {
     return allowUpdates.includes(update);
   });
-  if (!isValidOperation) return res.status(400).send('error: Invalid updates!');
+  if (!isValidOperation) return res.status(400).send("error: Invalid updates!");
 
   try {
     const hd = await Order.findOne({ _id: req.params.id });
@@ -120,7 +120,7 @@ export const updateOrder = async (req, res) => {
     // lưu file ảnh vào thư mục confirms trong firebase
     if (req.file) {
       const storage = getStorage();
-      const fileExtension = req.file.originalname.split('.').pop(); //đuôi file ảnh
+      const fileExtension = req.file.originalname.split(".").pop(); //đuôi file ảnh
       const today = new Date();
       const timestamp = `${today.getMilliseconds()}:${today.getMinutes()}:${today.getHours()}-${today.getDate()}-${
         today.getMonth() + 1
@@ -128,7 +128,7 @@ export const updateOrder = async (req, res) => {
       const storageRef = ref(
         storage,
         `confirms/${req.file.originalname
-          .split('.')
+          .split(".")
           .shift()}-${timestamp}.${fileExtension}`
       );
       const metadata = {
@@ -147,7 +147,7 @@ export const updateOrder = async (req, res) => {
 
     //Cập nhật các thông tin của order
     updates.forEach((update) => {
-      if (update !== 'hinhanh') hd[update] = req.body[update];
+      if (update !== "hinhanh") hd[update] = req.body[update];
     });
 
     await hd.save();
@@ -160,11 +160,11 @@ export const updateOrder = async (req, res) => {
 export const deleteOrder = async (req, res) => {
   try {
     const hd = await Order.findByIdAndDelete({ _id: req.params.id });
-    if (!hd) res.status(404).send('Not found!');
-    if (hd.hinhanh !== '') {
+    if (!hd) res.status(404).send("Not found!");
+    if (hd.hinhanh !== "") {
       const storage = getStorage();
       const url = new URL(hd.hinhanh);
-      const filename = decodeURIComponent(url.pathname.split('/').pop());
+      const filename = decodeURIComponent(url.pathname.split("/").pop());
       const fileRef = ref(storage, filename);
       await deleteObject(fileRef);
     }

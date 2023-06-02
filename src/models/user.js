@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 export const UserSchema = new mongoose.Schema({
   userid: { type: String },
@@ -6,8 +6,9 @@ export const UserSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   address: { type: String, required: true },
   email: { type: String, required: true },
-  otp: { type: String, expires: '10m' },
+  otp: { type: String, expires: "10m" },
   password: { type: String, required: true },
-  role: { type: String, enum: ['user', 'admin'], default: 'user' },
+  role: { type: String, enum: ["user", "admin"], default: "user" },
 });
-export default mongoose.model.Users || mongoose.model('User', UserSchema);
+
+export default mongoose.model.Users || mongoose.model("User", UserSchema);

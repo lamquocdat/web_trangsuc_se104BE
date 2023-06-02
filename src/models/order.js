@@ -1,28 +1,29 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 const orderSchema = new mongoose.Schema(
   {
     mahd: {
       type: String,
-      default: 'HD0',
+      default: "HD0",
       trim: true,
     },
     userId: {
-        type: String,  
-        require: true,
-        trim: true
+      type: String,
+      require: true,
+      trim: true,
     },
     hinhanh: {
       type: String,
       require: true,
       trim: true,
-      default: '',
+      default: "",
     },
-    sanphams: [{
+    sanphams: [
+      {
         hinhanh: {
           type: String,
           require: true,
           default:
-            'https://m.media-amazon.com/images/I/81bc8mA3nKL._AC_UY327_FMwebp_QL65_.jpg',
+            "https://m.media-amazon.com/images/I/81bc8mA3nKL._AC_UY327_FMwebp_QL65_.jpg",
         },
         sanpham: {
           type: String,
@@ -32,7 +33,7 @@ const orderSchema = new mongoose.Schema(
           type: String,
           require: true,
           default:
-            'https://m.media-amazon.com/images/I/81bc8mA3nKL._AC_UY327_FMwebp_QL65_.jpg',
+            "https://m.media-amazon.com/images/I/81bc8mA3nKL._AC_UY327_FMwebp_QL65_.jpg",
         },
         loaisp: {
           type: String,
@@ -63,8 +64,8 @@ const orderSchema = new mongoose.Schema(
       trim: true,
     },
     tinhtrang: {
-        type: String,
-        default: "Đang xử lý"
+      type: String,
+      default: "Đang xử lý",
     },
     diachigiaohang: {
       type: String,
@@ -81,4 +82,4 @@ const orderSchema = new mongoose.Schema(
   },
   { require: true }
 );
-export default mongoose.model.Orders || mongoose.model('Order', orderSchema);
+export default mongoose.model.Orders || mongoose.model("Order", orderSchema);
