@@ -57,8 +57,10 @@ export default class VouchersController {
   static async deleteVouchers(req, res) {
     try {
       console.debug("Deleting Vouchers...");
-      const { id } = req.params;
-      const deletedVouchers = await Vouchers.findOneAndDelete(id);
+
+      const deletedVouchers = await Vouchers.findOneAndDelete({
+        _id: req.params.id,
+      });
       if (!deletedVouchers) {
         return res.status(404).json({ error: "Vouchers not found." });
       }

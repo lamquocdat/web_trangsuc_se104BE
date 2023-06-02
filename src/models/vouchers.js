@@ -9,6 +9,7 @@ const vouchersSchema = new mongoose.Schema({
   products: [
     {
       name: { type: String, require: true },
+      image: { type: String, require: true },
       price: { type: Number, required: true },
       category: { type: String, enum: ["Nhẫn", "Dây chuyền", "Bông tai"] },
       amount: { type: Number, default: "1" },

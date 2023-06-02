@@ -14,6 +14,16 @@ export default class ProductController {
     }
   }
 
+  // Phân loại sản phẩm:
+  static async getProductsByCategory(req, res) {
+    try {
+      const { category } = req.params;
+      const products = await Product.find({ category });
+      res.json(products);
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
   //sort và lấy 4 sản phẩm
   static async sortAndgetAllProduct(req, res) {
     try {
@@ -96,13 +106,15 @@ export default class ProductController {
     }
   }
   //Xóa sản phẩm:
+
   static async deleteProduct(req, res) {
     try {
       console.debug("Deleting Product...");
-      const { id } = req.params;
-      const deletedProduct = await Product.findOneAndDelete(id);
+      const deletedProduct = await Product.findOneAndDelete({
+        _id: req.params.id,
+      });
       if (!deletedProduct) {
-        return res.status(404).json({ error: "Product not found" });
+        return res.status(404).json({ error: "Product not found." });
       }
       return res.json(deletedProduct);
     } catch (error) {

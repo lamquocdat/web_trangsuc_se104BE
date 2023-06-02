@@ -1,12 +1,12 @@
-import Service from '../models/service.js';
-import ServiceType from '../models/serviceType.js';
+import Service from "../models/service.js";
+import ServiceType from "../models/serviceType.js";
 
 //Lấy danh sách dịch vụ
 export const getAllService = async (req, res) => {
   try {
-    const service = await Service.find().populate('serviceTypes');
+    const service = await Service.find().populate("serviceTypes");
     if (!service) {
-      throw 'error';
+      throw "error";
     }
     return res.status(201).json(service);
   } catch (error) {
@@ -18,9 +18,9 @@ export const getAllService = async (req, res) => {
 export const getServiceById = async (req, res) => {
   try {
     const service = await Service.find({ _id: req.params.id }).populate(
-      'serviceTypes'
+      "serviceTypes"
     );
-    if (!service) res.status(404).send('Not found!');
+    if (!service) res.status(404).send("Not found!");
     res.send(service);
   } catch (e) {
     res.status(500).send(e);
@@ -30,7 +30,7 @@ export const getServiceById = async (req, res) => {
 export const getServiceBySID = async (req, res) => {
   try {
     const sid = req.params.s_id;
-    const service = await Service.find({ s_id: sid }).populate('serviceTypes');
+    const service = await Service.find({ s_id: sid }).populate("serviceTypes");
     res.send(service);
   } catch (e) {
     res.status(500).send(e);
@@ -85,12 +85,12 @@ export const addService = async (req, res) => {
 
 export const deleteService = async (req, res) => {
   try {
-    console.debug('Deleting service...');
+    console.debug("Deleting service...");
     const deletetService = await Service.findOneAndDelete({
       _id: req.params.id,
     });
     if (!deletetService) {
-      return res.status(404).json({ error: 'Service not found.' });
+      return res.status(404).json({ error: "Service not found." });
     }
     return res.json(deletetService);
   } catch (error) {
