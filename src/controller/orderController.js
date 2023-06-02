@@ -55,7 +55,7 @@ export const getOrderByStatus = async (req, res) => {
         $lookup: {
           from: 'users', // Tên bảng user
           localField: 'userId', // Trường liên kết trong bảng Order
-          foreignField: 'userId', // Trường liên kết trong bảng User
+          foreignField: '_id', // Trường liên kết trong bảng User
           as: 'user', // Tên đối tượng được liên kết
         },
       },
