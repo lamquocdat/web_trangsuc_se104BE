@@ -336,16 +336,13 @@ export async function resetPassword(req, res) {
     UserModel.findOne({ _id }).then(function (user) {
       if (!user) return res.status(404).send({ error: 'username not found' });
       bcrypt.hash(password, 10).then(function (hashedPassword) {
-        UserModel.updateOne({ password: hashedPassword })
+        UserModel.updateOne({ _id: _id }, { password: hashedPassword })
           .then(function () {
             req.app.locals.resetSession = false;
             return res.status(201).send({ msg: 'password reseted' });
           })
           .catch(function (error) {
-            return res.status(500).send({ error: 'can not reset password' });
-          })
-          .catch(function (error) {
-            return res.status(500).send({ error: 'can not hash password' });
+            return res.status(501).send({ error: 'can not reset password' });
           });
       });
     });
@@ -365,21 +362,18 @@ export async function changepassword(req, res) {
           if (!passwordCheck)
             return res.status(502).send({ error: 'Password not correct' });
           else {
-            bcrypt.hash(newPassword, 10).then(function (hashedPassword) {
-              UserModel.updateOne({ password: hashedPassword })
+            bcrypt.hash(newPassword, 10).then(async function (hashedPassword) {
+              UserModel.updateOne({ _id: _id }, { password: hashedPassword })
                 .then(function () {
-                  req.app.locals.resetSession = false;
+                  console.log(res);
+
                   return res.status(201).send({ msg: 'password reseted' });
                 })
                 .catch(function (error) {
+                  console.log(error);
                   return res
                     .status(500)
                     .send({ error: 'can not reset password' });
-                })
-                .catch(function (error) {
-                  return res
-                    .status(500)
-                    .send({ error: 'can not hash password' });
                 });
             });
           }
