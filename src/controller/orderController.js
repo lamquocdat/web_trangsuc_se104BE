@@ -46,25 +46,7 @@ export const getOrderByKH = async (req, res) => {
 export const getOrderByStatus = async (req, res) => {
   try {
     const status = req.params.tinhtrang;
-    const orders = await Order.aggregate([
-      // Tìm các đơn hàng với tình trạng được truyền vào
-      { $match: { tinhtrang: status } },
-
-      // Liên kết với bảng user để lấy thông tin tên của khách hàng
-      {
-        $lookup: {
-          from: "users", // Tên bảng user
-          localField: "userId", // Trường liên kết trong bảng Order
-          foreignField: "_id", // Trường liên kết trong bảng User
-          as: "user", // Tên đối tượng được liên kết
-        },
-      },
-
-      // Đổi tên trường userId thành name để hiển thị tên khách hàng thay vì mã khách hàng
-      { $addFields: { name: { $arrayElemAt: ["$user.name", 0] } } },
-      { $unset: ["user"] },
-    ]);
-
+    const orders = await Order.find({ tinhtrang: status });
     res.send(orders);
   } catch (e) {
     res.status(500).send(e);
