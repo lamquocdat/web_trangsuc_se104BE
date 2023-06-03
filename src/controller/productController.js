@@ -28,7 +28,7 @@ export default class ProductController {
   static async sortAndgetAllProduct(req, res) {
     try {
       const sort = { _id: -1 };
-      const limit = 4;
+      const limit = 7;
       const product = await Product.find().sort(sort).limit(limit);
       if (!product) {
         throw "error";
@@ -42,7 +42,7 @@ export default class ProductController {
   static async sortBySoldNumberAndGetAllProduct(req, res) {
     try {
       const sort = { quantity_sold: -1 };
-      const limit = 4;
+      const limit = 7;
       const product = await Product.find().sort(sort).limit(limit);
       if (!product) {
         throw "error";
