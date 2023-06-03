@@ -58,7 +58,8 @@ export default class UserController {
     try {
       console.debug('Deleting User...');
       const { _id } = req.params;
-      const deletedUser = await User.findOneAndDelete(_id);
+      console.log(_id);
+      const deletedUser = await User.deleteOne({ _id: _id });
       if (!deletedUser) {
         return res.status(404).json({ error: 'User not found.' });
       }
