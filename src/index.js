@@ -14,6 +14,7 @@ import warehouseRouter from "../src/routers/warehouseRouter.js";
 import serviceTypeRouter from "../src/routers/serviceTypeRouter.js";
 import loginRouter from "../src/routers/LoginRouter.js";
 import paymentRouter from "../src/routers/paymentRouter.js";
+import reviewRouter from "../src/routers/reviewRouter.js";
 import morgan from "morgan";
 import connect from "./database/mongoose.js";
 //cấu hình để upload ảnh lên firebase
@@ -51,6 +52,7 @@ app.use(serviceRouter);
 app.use(loginRouter);
 app.use(serviceTypeRouter);
 app.use(paymentRouter);
+app.use(reviewRouter);
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
