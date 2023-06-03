@@ -14,11 +14,35 @@ export default class ProductController {
     }
   }
 
+  // Phân loại sản phẩm:
+  static async getProductsByCategory(req, res) {
+    try {
+      const { category } = req.params;
+      const products = await Product.find({ category });
+      res.json(products);
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
   //sort và lấy 4 sản phẩm
   static async sortAndgetAllProduct(req, res) {
     try {
       const sort = { _id: -1 };
-      const limit = 4;
+      const limit = 7;
+      const product = await Product.find().sort(sort).limit(limit);
+      if (!product) {
+        throw "error";
+      }
+      return res.status(201).json(product);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+  //sort theo số lượng sản phẩm bán được
+  static async sortBySoldNumberAndGetAllProduct(req, res) {
+    try {
+      const sort = { quantity_sold: -1 };
+      const limit = 7;
       const product = await Product.find().sort(sort).limit(limit);
       if (!product) {
         throw "error";
@@ -82,13 +106,15 @@ export default class ProductController {
     }
   }
   //Xóa sản phẩm:
+
   static async deleteProduct(req, res) {
     try {
       console.debug("Deleting Product...");
-      const { id } = req.params;
-      const deletedProduct = await Product.findOneAndDelete(id);
+      const deletedProduct = await Product.findOneAndDelete({
+        _id: req.params.id,
+      });
       if (!deletedProduct) {
-        return res.status(404).json({ error: "Product not found" });
+        return res.status(404).json({ error: "Product not found." });
       }
       return res.json(deletedProduct);
     } catch (error) {
