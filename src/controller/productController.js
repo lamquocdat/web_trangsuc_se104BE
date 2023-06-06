@@ -123,20 +123,37 @@ export default class ProductController {
   }
 
   static async searchProduct(req, res) {
-    const { searchTerm } = req.query;
+    const query = req.query.query;
 
-    try {
-      const products = await Product.find({
-        $or: [
-          { productid: { $regex: searchTerm, $options: "i" } },
-          { name: { $regex: searchTerm, $options: "i" } },
-        ],
-      });
+    // Chuyển đổi giá trị query thành một số
+    const parsedQuery = parseFloat(query);
 
-      res.json(products);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Something went wrong" });
+    // Kiểm tra xem query có phải là một số hợp lệ hay không
+    const isNumber = !isNaN(parsedQuery) && isFinite(query);
+
+    // Tạo điều kiện tìm kiếm
+    const searchCondition = {
+      $or: [
+        { productid: { $regex: query, $options: "i" } },
+        { name: { $regex: query, $options: "i" } },
+      ],
+    };
+
+    // Nếu query là một số hợp lệ, thêm điều kiện tìm kiếm theo price hoặc quality
+    if (isNumber) {
+      searchCondition.$or.push({ price: parsedQuery });
     }
+
+    // Tìm kiếm sản phẩm dựa trên điều kiện tìm kiếm
+    Product.find(searchCondition, (err, products) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+      } else if (products.length === 0) {
+        res.status(404).send("No products found");
+      } else {
+        res.json(products);
+      }
+    });
   }
 }
