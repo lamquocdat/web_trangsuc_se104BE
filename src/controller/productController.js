@@ -136,6 +136,7 @@ export default class ProductController {
       $or: [
         { productid: { $regex: query, $options: "i" } },
         { name: { $regex: query, $options: "i" } },
+        { quality: { $regex: query, $options: "i" } },
       ],
     };
 
