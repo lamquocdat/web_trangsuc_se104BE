@@ -1,5 +1,5 @@
 import OrderModel from '../models/order.js';
-import confirmScheduleMail from './mailer.js';
+import { confirmDeliveryMail, confirmScheduleMail } from './mailer.js';
 
 export async function getAllOrders(req, res) {
   try {
@@ -20,7 +20,6 @@ export async function getAllOrdersAllUser(req, res) {
   try {
     const orders = await OrderModel.find({});
 
-    console.log(orders);
     res.status(202).send(orders);
   } catch (error) {
     console.log(error);
@@ -74,12 +73,20 @@ export async function deliveredOrderById(req, res) {
 }
 export async function confirmOrderbyId(req, res) {
   try {
-    const { tinhtrang } = req.body;
+    const { tinhtrang, email, total } = req.body;
 
     const _orderid = req.body._orderid;
+    console.log(email, tinhtrang, total, _orderid);
     OrderModel.updateOne({ _id: _orderid }, { tinhtrang: tinhtrang })
       .then(function (data) {
-        res.status(201).send(data);
+        try {
+          confirmDeliveryMail(email, total, _orderid);
+
+          return res.status(201).send('ok');
+        } catch (error) {
+          console.log(error);
+          return res.status(500).send({ error });
+        }
       })
       .catch(function (error) {
         console.log(error);
