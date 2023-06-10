@@ -78,6 +78,17 @@ export default class ProductController {
       return res.status(400).json({ error: error.message });
     }
   }
+
+  //Lấy sản phẩm theo quality
+  static async getProductsByQuality(req, res) {
+    try {
+      const { quality } = req.params;
+      const products = await Product.find({ quality });
+      res.json(products);
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
   //Thêm sản phẩm:
   static async addProduct(req, res) {
     try {
