@@ -7,6 +7,7 @@ router
   .get("/product/search", ProductController.searchProduct)
   .get("/product/:id", ProductController.getProductById)
   .get("/product/category/:category", ProductController.getProductsByCategory)
+  .get("/product/checkQuality/:quality", ProductController.getProductsByQuality)
   .get("/sortedProduct", ProductController.sortAndgetAllProduct)
   .get(
     "/soldNumbersOfProducts",
