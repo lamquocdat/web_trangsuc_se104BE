@@ -6,6 +6,7 @@ import { localVariables } from '../helper/auth.js';
 
 router.route('/register').post(loginController.register);
 router.route('/login').post(loginController.login);
+router.route('/loginAdmin').post(loginController.loginAdmin);
 //first verify user=>  move next
 
 //GET METHOD

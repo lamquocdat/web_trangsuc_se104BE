@@ -165,6 +165,7 @@ export async function login(req, res) {
               _id: user._id,
               token,
               ten: user.name,
+              role,
             });
           })
           .catch(function (error) {
@@ -179,7 +180,48 @@ export async function login(req, res) {
     return res.status(500).send({ error });
   }
 }
+export async function loginAdmin(req, res) {
+  const { email, password } = req.body;
 
+  try {
+    UserModel.findOne({ email: email, role: 'admin' })
+      .then(function (user) {
+        bcrypt
+          .compare(password, user.password)
+          .then(function (passwordCheck) {
+            console.log(passwordCheck);
+            if (!passwordCheck) return res.status(402).send('wrong!');
+
+            //create JWT TOKEN
+            const token = jwt.sign(
+              {
+                userId: user._id,
+                email: user.email,
+              },
+              'WNi3oF3NfduzvwUiOPlnDdUUjIlMcv7fX28ms3udpPM',
+
+              { expiresIn: '24h' }
+            );
+            return res.status(200).send({
+              msg: 'Login Successfully',
+              _id: user._id,
+              token,
+              ten: user.name,
+              role,
+            });
+          })
+          .catch(function (error) {
+            console.log(error);
+            return res.status(401).send('Password is not correct');
+          });
+      })
+      .catch(function (error) {
+        return res.status(409).send('not admin');
+      });
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
+}
 //middleware verify user
 
 export async function verifyUser(req, res, next) {
