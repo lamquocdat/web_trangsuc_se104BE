@@ -181,7 +181,7 @@ export async function login(req, res) {
   }
 }
 export async function loginAdmin(req, res) {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
 
   try {
     UserModel.findOne({ email: email, role: 'admin' })
