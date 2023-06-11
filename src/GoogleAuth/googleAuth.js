@@ -19,6 +19,7 @@ const googleAuth = {
         token: token,
         _id: isUserExists._id,
         name: isUserExists.name,
+        role: 'user',
       };
       return { login };
     }
