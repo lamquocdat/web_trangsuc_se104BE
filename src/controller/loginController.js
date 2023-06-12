@@ -294,20 +294,29 @@ export async function updateUser(req, res) {
     const { _id } = req.body;
     const user = req.body.user;
     const { email, phone } = user;
+    const userFound = await UserModel.findOne({ _id: _id });
+    console.log(userFound);
     const existEmail = new Promise(async function (resolve, reject) {
-      const emailexist = await UserModel.findOne({ email });
+      if (userFound.email === email) resolve();
+      else {
+        const emailexist = await UserModel.findOne({ email });
 
-      if (emailexist) reject('Email already exists');
+        if (emailexist) reject('Email already exists');
 
-      resolve();
+        resolve();
+      }
     });
 
     const existPhone = new Promise(async function (resolve, reject) {
-      const phoneexist = await UserModel.findOne({ phone });
+      const userFound = await UserModel.findOne({ _id: _id });
+      if (userFound.phone === phone) resolve();
+      else {
+        const phoneexist = await UserModel.findOne({ phone });
 
-      if (phoneexist) reject('Phone already exists');
+        if (phoneexist) reject('Phone already exists');
 
-      resolve();
+        resolve();
+      }
     });
     Promise.all([existEmail, existPhone])
       .then(() => {
