@@ -9,6 +9,9 @@ router
   .get("/product/category/:category", ProductController.getProductsByCategory)
   .get("/product/checkQuality/:quality", ProductController.getProductsByQuality)
   .get("/sortedProduct", ProductController.sortAndgetAllProduct)
+  .get("/product/category/ascendingPrice/:category", ProductController.getAscendingPriceByCategory)
+  .get("/product/category/descendingPrice/:category", ProductController.getDescendingPriceByCategory)
+  .get("/product/category/mostSold/:category", ProductController.getMostSoldProductByCategory)
   .get(
     "/soldNumbersOfProducts",
     ProductController.sortBySoldNumberAndGetAllProduct
