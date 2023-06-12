@@ -139,7 +139,7 @@ export async function register(req, res) {
 
 export async function login(req, res) {
   const { email, password } = req.body;
-
+  const role = 'user';
   try {
     UserModel.findOne({ email })
       .then(function (user) {
