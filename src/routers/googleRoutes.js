@@ -46,14 +46,15 @@ router.get('/success', async (req, res) => {
     const responseData = JSON.stringify(login);
 
     const redirectUrl =
-      'http://localhost:3000/?responseData=' + encodeURIComponent(responseData);
+      'https://dialuxury.vercel.app/?responseData=' +
+      encodeURIComponent(responseData);
     return res.redirect(302, redirectUrl);
   }
   console.log('Registering new Google user..');
   const responseData = JSON.stringify(register);
 
   const redirectUrl =
-    'http://localhost:3000/register?responseData=' +
+    'https://dialuxury.vercel.app/register?responseData=' +
     encodeURIComponent(responseData);
 
   return res.redirect(302, redirectUrl);
