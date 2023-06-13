@@ -1,4 +1,5 @@
 import Product from "../models/product.js";
+import order from "../models/order.js"
 
 export default class ProductController {
   //Lấy danh sách sản phẩm:
@@ -174,6 +175,25 @@ export default class ProductController {
         return res.status(404).json({ error: "Product not found." });
       }
       return res.json(updatedProduct);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+  //Tăng số lượng đã bán
+  static async increaseProductsSold(req, res) {
+    try {
+      const id  = req.params.id;
+      const or = await order.findById(id);
+      for(const sp of or.sanphams){
+        const product = await Product.findOne({ name: sp.sanpham });
+        if(!product){
+          return res.status(404).json({ error: "Product not found." }); 
+        }
+        product.quantity_sold+=sp.sl;
+        product.quantity-=sp.sl;
+        await product.save();
+      }
+      return res.status(200).json({ message: "Products sold increased successfully." });
     } catch (error) {
       return res.status(400).json({ error: error.message });
     }
