@@ -138,4 +138,28 @@ export default class VouchersController {
         .json({ message: "Đã xảy ra lỗi khi cập nhật sản phẩm", error });
     }
   }
+  static async getProductById(req, res) {
+    try {
+      const { id, productId } = req.params;
+
+      // Kiểm tra xem Vouchers có tồn tại không
+      const vouchers = await Vouchers.findById(id);
+      if (!vouchers) {
+        return res.status(404).json({ error: "Vouchers not found" });
+      }
+
+      // Tìm kiếm sản phẩm theo productId trong danh sách products
+      const product = vouchers.products.find(
+        (p) => p._id.toString() === productId
+      );
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+
+      res.json(product);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Server error" });
+    }
+  }
 }

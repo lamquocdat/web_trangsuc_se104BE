@@ -5,6 +5,8 @@ import VouchersController from "../controller/vouchersController.js";
 router
   .get("/vouchers", VouchersController.getAllVouchers)
   .get("/vouchers/:id", VouchersController.getVouchersById)
+  .get("/vouchers/:id/product/:productId", VouchersController.getProductById)
+
   .post("/vouchers", VouchersController.addVouchers)
   .post("/vouchers/:vouchersId/product", VouchersController.addProduct)
   .put("/vouchers/:id", VouchersController.updateVouchers)
