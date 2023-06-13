@@ -207,7 +207,7 @@ export async function loginAdmin(req, res) {
               _id: user._id,
               token,
               ten: user.name,
-              role,
+              role1: 'admin',
             });
           })
           .catch(function (error) {
