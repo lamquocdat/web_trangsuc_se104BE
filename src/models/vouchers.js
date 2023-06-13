@@ -14,12 +14,7 @@ const vouchersSchema = new mongoose.Schema({
       price: { type: Number, required: true },
       category: { type: String, enum: ["Nhẫn", "Dây chuyền", "Bông tai"] },
       amount: { type: Number, default: "1" },
-      Unit: { type: String, default: "Cái" },
-      dvt: {
-        type: String,
-        require: true,
-        default: "Chiếc",
-      },
+      Unit: { type: String, default: "Chiếc" },
       quality: {
         type: String,
         require: true,
@@ -29,6 +24,10 @@ const vouchersSchema = new mongoose.Schema({
         require: true,
       },
       size: {
+        type: String,
+        require: true,
+      },
+      color: {
         type: String,
         require: true,
       },
