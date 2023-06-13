@@ -19,6 +19,7 @@ router
   )
   .post("/product", ProductController.addProduct)
   .put("/product/:id", ProductController.updateProduct)
+  .put("/product/increase_sold/:id", ProductController.increaseProductsSold)
   .delete("/product/:id", ProductController.deleteProduct);
 
 export default router;
