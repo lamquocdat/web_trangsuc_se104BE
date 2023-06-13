@@ -11,6 +11,7 @@ router
   .get("/sortedProduct", ProductController.sortAndgetAllProduct)
   .get("/product/category/ascendingPrice/:category", ProductController.getAscendingPriceByCategory)
   .get("/product/category/descendingPrice/:category", ProductController.getDescendingPriceByCategory)
+  .get("/product/category/newest/:category", ProductController.getNewestByCategory)
   .get("/product/category/mostSold/:category", ProductController.getMostSoldProductByCategory)
   .get(
     "/soldNumbersOfProducts",
