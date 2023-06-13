@@ -42,7 +42,7 @@ export default class ProductController {
   static async getAscendingPriceByCategory(req, res) {
     try {
       const { category } = req.params;
-      const sort = { price: -1 };
+      const sort = { price: 1 };
 
       const product = await Product.find({ category }).sort(sort);
       if (!product) {
@@ -58,7 +58,7 @@ export default class ProductController {
   static async getDescendingPriceByCategory(req, res) {
     try {
       const { category } = req.params;
-      const sort = { price: 1 };
+      const sort = { price: -1 };
       
       const product = await Product.find({ category }).sort(sort);
       if (!product) {
