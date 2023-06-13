@@ -1,4 +1,5 @@
 import Product from "../models/product.js";
+import order from "../models/order.js"
 
 export default class ProductController {
   //Lấy danh sách sản phẩm:
@@ -24,12 +25,74 @@ export default class ProductController {
       res.status(500).json({ error: "Internal server error" });
     }
   }
-  //sort và lấy 4 sản phẩm
+  //sort
   static async sortAndgetAllProduct(req, res) {
     try {
       const sort = { _id: -1 };
-      const limit = 7;
-      const product = await Product.find().sort(sort).limit(limit);
+     
+      const product = await Product.find().sort(sort);
+      if (!product) {
+        throw "error";
+      }
+      return res.status(201).json(product);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+//giá tăng dần theo Category
+  static async getAscendingPriceByCategory(req, res) {
+    try {
+      const { category } = req.params;
+      const sort = { price: 1 };
+
+      const product = await Product.find({ category }).sort(sort);
+      if (!product) {
+        throw "error";
+      }
+      return res.status(201).json(product);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+  //giá giảm dần theo Category
+  static async getDescendingPriceByCategory(req, res) {
+    try {
+      const { category } = req.params;
+      const sort = { price: -1 };
+      
+      const product = await Product.find({ category }).sort(sort);
+      if (!product) {
+        throw "error";
+      }
+      return res.status(201).json(product);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+  //lấy các sản phẩm mới nhất theo Category
+  static async getNewestByCategory(req, res) {
+    try {
+      const { category } = req.params;
+      const sort = { _id: -1 };
+      
+      const product = await Product.find({ category }).sort(sort);
+      if (!product) {
+        throw "error";
+      }
+      return res.status(201).json(product);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+  //lấy các sản phẩm bán chạy theo Category
+  static async getMostSoldProductByCategory(req, res) {
+    try {
+      const sort = { quantity_sold: -1 };
+      const { category } = req.params;
+      const product = await Product.find({ category }).sort(sort);
       if (!product) {
         throw "error";
       }
@@ -42,8 +105,8 @@ export default class ProductController {
   static async sortBySoldNumberAndGetAllProduct(req, res) {
     try {
       const sort = { quantity_sold: -1 };
-      const limit = 7;
-      const product = await Product.find().sort(sort).limit(limit);
+     
+      const product = await Product.find().sort(sort);
       if (!product) {
         throw "error";
       }
@@ -112,6 +175,25 @@ export default class ProductController {
         return res.status(404).json({ error: "Product not found." });
       }
       return res.json(updatedProduct);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+  //Tăng số lượng đã bán
+  static async increaseProductsSold(req, res) {
+    try {
+      const id  = req.params.id;
+      const or = await order.findById(id);
+      for(const sp of or.sanphams){
+        const product = await Product.findOne({ name: sp.sanpham });
+        if(!product){
+          return res.status(404).json({ error: "Product not found." }); 
+        }
+        product.quantity_sold+=sp.sl;
+        product.quantity-=sp.sl;
+        await product.save();
+      }
+      return res.status(200).json({ message: "Products sold increased successfully." });
     } catch (error) {
       return res.status(400).json({ error: error.message });
     }
