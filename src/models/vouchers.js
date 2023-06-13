@@ -8,6 +8,7 @@ const vouchersSchema = new mongoose.Schema({
   PhoneNumber: { type: String, require: true },
   products: [
     {
+      productid: { type: String, require: true },
       name: { type: String, require: true },
       image: { type: String, require: true },
       price: { type: Number, required: true },

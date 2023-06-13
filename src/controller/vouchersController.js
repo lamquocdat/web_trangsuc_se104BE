@@ -69,4 +69,73 @@ export default class VouchersController {
       return res.status(400).json({ error: error.message });
     }
   }
+
+  // Thêm sản phẩm vào trang chi tiết vouchers
+  static async addProduct(req, res) {
+    const { vouchersId } = req.params;
+    const { product } = req.body;
+
+    try {
+      const vouchers = await Vouchers.findById(vouchersId);
+
+      if (!vouchers) {
+        return res.status(404).json({ message: "Không tìm thấy vouchers" });
+      }
+
+      vouchers.products.push(product);
+      await vouchers.save();
+
+      res.status(200).json({ product: product });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Đã xảy ra lỗi khi thêm sản phẩm", error });
+    }
+  }
+
+  // Xóa sản phẩm khỏi trang chi tiết vouchers
+  static async deleteProduct(req, res) {
+    const { vouchersId, productId } = req.params;
+
+    try {
+      const vouchers = await Vouchers.findByIdAndUpdate(vouchersId, {
+        $pull: { products: { _id: productId } },
+      });
+
+      if (!vouchers) {
+        return res.status(404).json({ message: "Không tìm thấy vouchers" });
+      }
+
+      res.status(200).json({ message: "Sản phẩm đã được xóa khỏi vouchers" });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Đã xảy ra lỗi khi xóa sản phẩm", error });
+    }
+  }
+
+  // Sửa thông tin sản phẩm trong trang chi tiết vouchers
+  static async updateProduct(req, res) {
+    const { vouchersId, productId } = req.params;
+    const updatedProduct = req.body;
+
+    try {
+      const vouchers = await Vouchers.findOneAndUpdate(
+        { _id: vouchersId, "products._id": productId },
+        { $set: { "products.$": updatedProduct } }
+      );
+
+      if (!vouchers) {
+        return res
+          .status(404)
+          .json({ message: "Không tìm thấy vouchers hoặc sản phẩm" });
+      }
+
+      res.status(200).json({ message: "Sản phẩm đã được cập nhật" });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Đã xảy ra lỗi khi cập nhật sản phẩm", error });
+    }
+  }
 }
