@@ -139,7 +139,7 @@ export async function register(req, res) {
 
 export async function login(req, res) {
   const { email, password } = req.body;
-
+  const role = 'user';
   try {
     UserModel.findOne({ email })
       .then(function (user) {
@@ -165,6 +165,7 @@ export async function login(req, res) {
               _id: user._id,
               token,
               ten: user.name,
+              role,
             });
           })
           .catch(function (error) {
@@ -179,7 +180,48 @@ export async function login(req, res) {
     return res.status(500).send({ error });
   }
 }
+export async function loginAdmin(req, res) {
+  const { email, password, role } = req.body;
 
+  try {
+    UserModel.findOne({ email: email, role: 'admin' })
+      .then(function (user) {
+        bcrypt
+          .compare(password, user.password)
+          .then(function (passwordCheck) {
+            console.log(passwordCheck);
+            if (!passwordCheck) return res.status(402).send('wrong!');
+
+            //create JWT TOKEN
+            const token = jwt.sign(
+              {
+                userId: user._id,
+                email: user.email,
+              },
+              'WNi3oF3NfduzvwUiOPlnDdUUjIlMcv7fX28ms3udpPM',
+
+              { expiresIn: '24h' }
+            );
+            return res.status(200).send({
+              msg: 'Login Successfully',
+              _id: user._id,
+              token,
+              ten: user.name,
+              role,
+            });
+          })
+          .catch(function (error) {
+            console.log(error);
+            return res.status(401).send('Password is not correct');
+          });
+      })
+      .catch(function (error) {
+        return res.status(409).send('not admin');
+      });
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
+}
 //middleware verify user
 
 export async function verifyUser(req, res, next) {
@@ -252,20 +294,29 @@ export async function updateUser(req, res) {
     const { _id } = req.body;
     const user = req.body.user;
     const { email, phone } = user;
+    const userFound = await UserModel.findOne({ _id: _id });
+    console.log(userFound);
     const existEmail = new Promise(async function (resolve, reject) {
-      const emailexist = await UserModel.findOne({ email });
+      if (userFound.email === email) resolve();
+      else {
+        const emailexist = await UserModel.findOne({ email });
 
-      if (emailexist) reject('Email already exists');
+        if (emailexist) reject('Email already exists');
 
-      resolve();
+        resolve();
+      }
     });
 
     const existPhone = new Promise(async function (resolve, reject) {
-      const phoneexist = await UserModel.findOne({ phone });
+      const userFound = await UserModel.findOne({ _id: _id });
+      if (userFound.phone === phone) resolve();
+      else {
+        const phoneexist = await UserModel.findOne({ phone });
 
-      if (phoneexist) reject('Phone already exists');
+        if (phoneexist) reject('Phone already exists');
 
-      resolve();
+        resolve();
+      }
     });
     Promise.all([existEmail, existPhone])
       .then(() => {
