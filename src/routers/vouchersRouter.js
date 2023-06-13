@@ -6,7 +6,16 @@ router
   .get("/vouchers", VouchersController.getAllVouchers)
   .get("/vouchers/:id", VouchersController.getVouchersById)
   .post("/vouchers", VouchersController.addVouchers)
+  .post("/vouchers/:vouchersId/product", VouchersController.addProduct)
   .put("/vouchers/:id", VouchersController.updateVouchers)
-  .delete("/vouchers/:id", VouchersController.deleteVouchers);
+  .put(
+    "/vouchers/:vouchersId/product/:productId",
+    VouchersController.updateProduct
+  )
+  .delete("/vouchers/:id", VouchersController.deleteVouchers)
+  .delete(
+    "/vouchers/:vouchersId/product/:productId",
+    VouchersController.deleteProduct
+  );
 
 export default router;
