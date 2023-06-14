@@ -20,6 +20,18 @@ export const getTonKhoById = async(req, res)=>{
         res.status(500).send(e)
     }
 }
+export const getTonKhoByThang = async(req, res)=>{
+  // const { id } = req.params
+  try {
+      const {thang} = req.params;
+      const tonkho = await Warehouse.find({thang: thang})
+      if (!tonkho || tonkho.length === 0)
+          res.status(404).send("Not found!")
+      res.send(tonkho)
+  } catch (e) {
+      res.status(500).send(e)
+  }
+}
 //Thêm người dùng:
 export const addTonKho = async(req, res)=> {
     try {

@@ -33,7 +33,10 @@ const warehouseSchema=new mongoose.Schema({
         type: Number,
         required: true,
     },
-        
+    thang: {
+        type: Number,
+        required: true,
+    }
 },{timestamps: true})
 const Warehouse=mongoose.model('Warehouse',warehouseSchema)
 export default Warehouse 
