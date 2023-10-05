@@ -25,13 +25,13 @@ import { initializeApp } from 'firebase/app';
 import historyOrderRouter from './routers/historyOrderRouter.js';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDt2XpoTVsNwqaJ1Rk0Z5TvtYWQukOjU84',
-  authDomain: 'dialuxury.firebaseapp.com',
-  projectId: 'dialuxury',
-  storageBucket: 'dialuxury.appspot.com',
-  messagingSenderId: '815826751425',
-  appId: '1:815826751425:web:26f62050c8de87dabea940',
-  measurementId: 'G-197DEF7CVB',
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.APP_ID,
+  measurementId: process.env.MEASUREMENT_ID,
 };
 
 initializeApp(firebaseConfig);
