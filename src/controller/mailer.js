@@ -1,5 +1,7 @@
 import nodemailer from 'nodemailer';
 import Service from '../models/service.js';
+import dotenv from 'dotenv';
+dotenv.config();
 export async function confirmScheduleMail(email, date, total, _id) {
   // create a nodemailer transporter using your SMTP credentials
   let transporter = nodemailer.createTransport({
@@ -7,14 +9,14 @@ export async function confirmScheduleMail(email, date, total, _id) {
     port: 587,
     secure: false,
     auth: {
-      user: 'solokill2001@gmail.com', // your email address
-      pass: 'kwounewjdeubkbeo', // your email password
+      user: process.env.EMAIL_USER, // your email address
+      pass: process.env.EMAIL_PASSWORD, // your email password
     },
   });
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: 'solokill2001@gmail.com', // sender address
+    from: process.env.EMAIL_USER, // sender address
     to: email, // list of receivers
     subject: 'Xác nhận đặt lịch hẹn ', // subject line
 
@@ -544,14 +546,14 @@ export async function confirmDeliveryMail(email, total, _id) {
     port: 587,
     secure: false,
     auth: {
-      user: 'solokill2001@gmail.com', // your email address
-      pass: 'kwounewjdeubkbeo', // your email password
+      user: process.env.EMAIL_USER, // your email address
+      pass: process.env.EMAIL_PASSWORD, // your email password
     },
   });
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: 'solokill2001@gmail.com', // sender address
+    from: process.env.EMAIL_USER, // sender address
     to: email, // list of receivers
     subject: 'Xác nhận giao hàng ', // subject line
 

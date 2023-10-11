@@ -4,7 +4,8 @@ import jwt from 'jsonwebtoken';
 import cart from '../models/cart.js';
 import otpGenerator from 'otp-generator';
 import nodemailer from 'nodemailer';
-
+import dotenv from 'dotenv';
+dotenv.config();
 async function sendOTPtoEmail(email, otp) {
   // create a nodemailer transporter using your SMTP credentials
   let transporter = nodemailer.createTransport({
@@ -12,14 +13,14 @@ async function sendOTPtoEmail(email, otp) {
     port: 587,
     secure: false,
     auth: {
-      user: 'solokill2001@gmail.com', // your email address
-      pass: 'kwounewjdeubkbeo', // your email password
+      user: process.env.EMAIL_USER, // your email address
+      pass: process.env.EMAIL_PASSWORD, // your email password
     },
   });
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: 'solokill2001@gmail.com', // sender address
+    from: process.env.EMAIL_USER, // sender address
     to: email, // list of receivers
     subject: 'Mã xác nhận quên mật khẩu', // subject line
 
